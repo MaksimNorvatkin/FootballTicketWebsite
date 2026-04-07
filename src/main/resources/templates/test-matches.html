@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Test Matches</title>
+</head>
+<body>
+<h1>Список матчей из БД:</h1>
+<div th:each="match : ${matches}">
+    <p th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam} + ' - ' + ${match.city} + ' - ' + ${match.matchDateTime}"></p>
+</div>
+</body>
+</html>
