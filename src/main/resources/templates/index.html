@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Главная - Билеты на матчи АПЛ</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Hero section -->
+    <div class="bg-primary text-white text-center py-5 mb-4 rounded">
+        <h1>Добро пожаловать в FootballTicket!</h1>
+        <p class="lead">Официальные билеты на матчи Английской Премьер Лиги</p>
+        <a href="/matches" class="btn btn-light btn-lg">Купить билеты</a>
+    </div>
+
+    <!-- Популярные матчи -->
+    <h2 class="mb-4">⭐ Популярные матчи</h2>
+    <div class="row mb-5">
+        <div class="col-md-4" th:each="match : ${popularMatches}">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h5>
+                    <p class="card-text">
+                        <strong>Город:</strong> <span th:text="${match.city}"></span><br>
+                        <strong>Стадион:</strong> <span th:text="${match.stadium}"></span><br>
+                        <strong>Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd.MM.yyyy HH:mm')}"></span>
+                    </p>
+                    <a th:href="'/match/' + ${match.id}" class="btn btn-primary">Выбрать билеты</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ближайшие матчи -->
+    <h2 class="mb-4">📅 Ближайшие матчи</h2>
+    <div class="row">
+        <div class="col-md-4" th:each="match : ${upcomingMatches}">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h5>
+                    <p class="card-text">
+                        <strong>Стадион:</strong> <span th:text="${match.stadium}"></span><br>
+                        <strong>Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd.MM.yyyy HH:mm')}"></span>
+                    </p>
+                    <a th:href="'/match/' + ${match.id}" class="btn btn-outline-primary">Купить билеты</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

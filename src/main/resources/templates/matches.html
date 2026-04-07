@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Все матчи АПЛ</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2 class="mb-4">Все матчи Английской Премьер Лиги</h2>
+
+    <!-- Форма фильтрации -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Фильтр матчей</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" action="/matches" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">🏙️ Город</label>
+                    <input type="text" name="city" class="form-control"
+                           th:value="${selectedCity}"
+                           placeholder="London, Manchester, Liverpool...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">⚽ Команда</label>
+                    <input type="text" name="team" class="form-control"
+                           th:value="${selectedTeam}"
+                           placeholder="Liverpool, Arsenal, Chelsea...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">🏟️ Стадион</label>
+                    <input type="text" name="stadium" class="form-control"
+                           th:value="${selectedStadium}"
+                           placeholder="Anfield, Emirates, Old Trafford...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">📅 Дата от</label>
+                    <input type="date" name="fromDate" class="form-control"
+                           th:value="${selectedFromDate}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">📅 Дата до</label>
+                    <input type="date" name="toDate" class="form-control"
+                           th:value="${selectedToDate}">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary w-100">
+                        🔍 Найти матчи
+                    </button>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <a href="/matches" class="btn btn-secondary w-100">
+                        🗑️ Сбросить
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Результаты фильтрации -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Найдено матчей: <span class="badge bg-primary" th:text="${matchesCount}">0</span></h4>
+    </div>
+
+    <!-- Список матчей -->
+    <div th:if="${matches != null and !matches.empty}">
+        <div class="row">
+            <div class="col-md-6 col-lg-4 mb-4" th:each="match : ${matches}">
+                <div class="card h-100 shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <div class="text-center mb-3">
+                            <h4 class="card-title text-primary" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h4>
+                            <hr>
+                        </div>
+                        <p class="card-text">
+                            <strong>🏟️ Стадион:</strong> <span th:text="${match.stadium}"></span><br>
+                            <strong>🏙️ Город:</strong> <span th:text="${match.city}"></span><br>
+                            <strong>📅 Дата и время:</strong>
+                            <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span><br>
+                            <strong>⭐ Популярность:</strong>
+                            <span class="badge bg-warning text-dark" th:text="${match.popularityScore} + '%'"></span>
+                        </p>
+                        <div class="d-grid gap-2">
+                            <a th:href="'/match/' + ${match.id}" class="btn btn-success btn-lg">
+                                🎫 Выбрать билеты
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Если матчей не найдено -->
+    <div th:unless="${matches != null and !matches.empty}" class="alert alert-info text-center">
+        <h4>😔 Матчи не найдены</h4>
+        <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
+        <a href="/matches" class="btn btn-primary">Показать все матчи</a>
+    </div>
+</div>
+
+<style>
+    .hover-shadow {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .hover-shadow:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+</style>
+</body>
+</html>

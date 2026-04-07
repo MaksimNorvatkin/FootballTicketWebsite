@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Заказ оформлен</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="alert alert-success text-center">
+        <h2>🎉 Заказ успешно оформлен!</h2>
+        <p class="lead">Спасибо за покупку!</p>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Детали заказа</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Номер заказа:</strong> <span th:text="${orderNumber}"></span></p>
+            <p><strong>Сумма:</strong> £<span th:text="${totalAmount}"></span></p>
+            <p><strong>Email для отслеживания:</strong> <span th:text="${customerEmail}"></span></p>
+            <p><strong>Статус:</strong> <span class="badge bg-success">Оплачен</span></p>
+        </div>
+    </div>
+
+    <div class="mt-4 text-center">
+        <a href="/track-order" class="btn btn-info">Отследить заказ</a>
+        <a href="/" class="btn btn-primary">На главную</a>
+    </div>
+</div>
+</body>
+</html>

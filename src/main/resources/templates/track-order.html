@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Отследить заказ</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2 class="mb-4">🔍 Отследить заказ</h2>
+
+    <!-- Форма поиска заказа -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Поиск заказа</h5>
+        </div>
+        <div class="card-body">
+            <form method="post" action="/track-order" class="row g-3">
+                <div class="col-md-6">
+                    <label class="form-label">Номер заказа *</label>
+                    <input type="text" name="orderNumber" class="form-control"
+                           placeholder="Например: ORD-1744080000000" required>
+                    <small class="text-muted">Номер заказа вы получили после оплаты</small>
+                </div>
+                <div class="col-md-6">
+                    <label class="form-label">Email *</label>
+                    <input type="email" name="email" class="form-control"
+                           placeholder="Ваш email" required>
+                    <small class="text-muted">Email, который указали при оформлении</small>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Найти заказ</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Результаты поиска -->
+    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${error}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div th:if="${order != null}" class="card">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">✅ Заказ найден</h5>
+        </div>
+        <div class="card-body">
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p><strong>📋 Номер заказа:</strong> <span th:text="${order.orderNumber}"></span></p>
+                    <p><strong>📅 Дата заказа:</strong> <span th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>💰 Сумма:</strong> <span class="badge bg-success fs-6">£<span th:text="${order.totalAmount}"></span></span></p>
+                    <p><strong>📧 Email:</strong> <span th:text="${order.customerEmail}"></span></p>
+                </div>
+            </div>
+
+            <h5>Статус заказа:</h5>
+            <div class="mb-4">
+                <span th:if="${order.status.name() == 'PAID'}" class="badge bg-success fs-6">✅ Оплачен</span>
+                <span th:if="${order.status.name() == 'NEW'}" class="badge bg-warning fs-6">🕒 В обработке</span>
+                <span th:if="${order.status.name() == 'CANCELLED'}" class="badge bg-danger fs-6">❌ Отменён</span>
+            </div>
+
+            <h5>🎫 Билеты в заказе:</h5>
+            <div th:if="${tickets != null and !tickets.empty}">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead class="table-dark">
+                        <tr>
+                            <th>Матч</th>
+                            <th>Сектор</th>
+                            <th>Ряд</th>
+                            <th>Место</th>
+                            <th>Цена</th>
+                            <th>Статус</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="ticket : ${tickets}">
+                            <td th:text="${ticket.match.homeTeam} + ' vs ' + ${ticket.match.awayTeam}"></td>
+                            <td th:text="${ticket.sector.name}"></td>
+                            <td th:text="${ticket.rowNumber}"></td>
+                            <td th:text="${ticket.seatNumber}"></td>
+                            <td>£<span th:text="${ticket.price}"></span></td>
+                            <td>
+                                <span th:if="${ticket.status.name() == 'PAID'}" class="badge bg-success">Оплачен</span>
+                                <span th:if="${ticket.status.name() == 'AVAILABLE'}" class="badge bg-info">Доступен</span>
+                                <span th:if="${ticket.status.name() == 'CANCELLED'}" class="badge bg-danger">Отменён</span>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div th:unless="${tickets != null and !tickets.empty}" class="alert alert-info">
+                Билеты не найдены
+            </div>
+
+            <div class="alert alert-info mt-3">
+                <strong>ℹ️ Информация:</strong> Билеты будут отправлены на указанный email в течение 24 часов.
+            </div>
+        </div>
+    </div>
+
+    <!-- Подсказка для тестирования -->
+    <div class="alert alert-secondary mt-4">
+        <h6>📝 Тестовые данные:</h6>
+        <p class="mb-0 small">После оформления заказа вы получите номер заказа. Используйте его и ваш email для отслеживания.</p>
+    </div>
+</div>
+</body>
+</html>

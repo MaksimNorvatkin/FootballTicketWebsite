@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Корзина</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2 class="mb-4">🛒 Корзина</h2>
+
+    <div th:if="${cartItems != null and !cartItems.empty}">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                <tr>
+                    <th>Матч</th>
+                    <th>Сектор</th>
+                    <th>Ряд/Место</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Сумма</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="entry : ${cartItems}">
+                    <td th:text="${entry.value.ticket.match.homeTeam} + ' vs ' + ${entry.value.ticket.match.awayTeam}"></td>
+                    <td th:text="${entry.value.ticket.sector.name}"></td>
+                    <td th:text="${entry.value.ticket.rowNumber} + '/' + ${entry.value.ticket.seatNumber}"></td>
+                    <td>£<span th:text="${entry.value.ticket.price}"></span></td>
+                    <td>
+                        <form th:action="@{'/cart/update/' + ${entry.key}}" method="post" class="d-inline">
+                            <input type="number" name="quantity" th:value="${entry.value.quantity}"
+                                   min="1" max="10" style="width: 70px;" class="form-control d-inline-block">
+                            <button type="submit" class="btn btn-sm btn-secondary">Обновить</button>
+                        </form>
+                    </td>
+                    <td>£<span th:text="${entry.value.subtotal}"></span></td>
+                    <td>
+                        <form th:action="@{'/cart/remove/' + ${entry.key}}" method="post">
+                            <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+                <tfoot class="table-light">
+                <tr>
+                    <td colspan="5" class="text-end"><strong>Итого:</strong></td>
+                    <td colspan="2"><strong>£<span th:text="${totalAmount}"></span></strong></td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="d-flex justify-content-between">
+            <form action="/cart/clear" method="post">
+                <button type="submit" class="btn btn-warning">Очистить корзину</button>
+            </form>
+            <a href="/checkout" class="btn btn-success btn-lg">Оформить заказ</a>
+        </div>
+    </div>
+
+    <div th:unless="${cartItems != null and !cartItems.empty}" class="alert alert-info text-center">
+        <h4>🛒 Корзина пуста</h4>
+        <p>Добавьте билеты на матчи, чтобы продолжить.</p>
+        <a href="/matches" class="btn btn-primary">Посмотреть матчи</a>
+    </div>
+</div>
+</body>
+</html>

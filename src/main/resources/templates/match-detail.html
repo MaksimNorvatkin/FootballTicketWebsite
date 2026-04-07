@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam} + ' - Билеты'"></title>
+
+    <!-- Стили для этой страницы -->
+    <th:block layout:fragment="styles">
+        <style>
+            .stadium {
+                background: linear-gradient(145deg, #2d5a2c 0%, #1a3f19 100%);
+                border-radius: 50%;
+                padding: 20px;
+                position: relative;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            }
+            .stadium-pitch {
+                background: linear-gradient(180deg, #3a8c3a 0%, #2d6b2d 100%);
+                border-radius: 10px;
+                padding: 15px;
+                border: 2px solid #ffd700;
+            }
+            .sector {
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border: 2px solid #fff;
+                border-radius: 8px;
+                text-align: center;
+                padding: 15px 5px;
+                font-weight: bold;
+                color: white;
+                text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+            }
+            .sector:hover {
+                transform: scale(1.05);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+                filter: brightness(1.1);
+            }
+            .sector.active {
+                border: 3px solid #ffd700;
+                box-shadow: 0 0 15px rgba(255,215,0,0.5);
+            }
+            .ticket-card {
+                transition: all 0.2s;
+                cursor: pointer;
+            }
+            .ticket-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+            .price-range {
+                background: linear-gradient(90deg, #28a745, #ffc107);
+                border-radius: 10px;
+                padding: 10px;
+            }
+        </style>
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <!-- Информация о матче -->
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h2 class="mb-0" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h2>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>🏟️ Стадион:</strong> <span th:text="${match.stadium}"></span></p>
+                    <p><strong>🏙️ Город:</strong> <span th:text="${match.city}"></span></p>
+                    <p><strong>📅 Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span></p>
+                </div>
+                <div class="col-md-6">
+                    <div class="price-range text-white text-center">
+                        <h5 class="mb-0">💰 Диапазон цен билетов</h5>
+                        <h3>£<span th:text="${minPrice}"></span> - £<span th:text="${maxPrice}"></span></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Модульный стадион -->
+        <div class="col-md-5 mb-4">
+            <h4 class="text-center mb-3">🏟️ Схема стадиона</h4>
+            <div class="stadium">
+                <div class="stadium-pitch">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="sector" th:each="sector, iterStat : ${sectors}"
+                                 th:if="${iterStat.index < 2}"
+                                 th:data-sector-id="${sector.id}"
+                                 th:style="'background-color: ' + ${sector.color}"
+                                 th:text="${sector.name}"
+                                 onclick="filterBySector(this)">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="sector" th:each="sector, iterStat : ${sectors}"
+                                 th:if="${iterStat.index >= 2 and iterStat.index < 4}"
+                                 th:data-sector-id="${sector.id}"
+                                 th:style="'background-color: ' + ${sector.color}"
+                                 th:text="${sector.name}"
+                                 onclick="filterBySector(this)">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="sector" th:each="sector, iterStat : ${sectors}"
+                                 th:if="${iterStat.index >= 4 and iterStat.index < 6}"
+                                 th:data-sector-id="${sector.id}"
+                                 th:style="'background-color: ' + ${sector.color}"
+                                 th:text="${sector.name}"
+                                 onclick="filterBySector(this)">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center mt-3 text-white">
+                        <small>⚽ Нажмите на сектор для фильтрации билетов</small>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <a th:href="'/match/' + ${match.id}" class="btn btn-outline-secondary btn-sm">Сбросить фильтр</a>
+            </div>
+        </div>
+
+        <!-- Список билетов -->
+        <div class="col-md-7">
+            <h4 class="mb-3">🎫 Доступные билеты</h4>
+            <div th:if="${tickets != null and !tickets.empty}">
+                <p class="text-muted">Найдено билетов: <strong th:text="${tickets.size()}"></strong></p>
+                <div class="row">
+                    <div class="col-md-6 mb-3" th:each="ticket : ${tickets}">
+                        <div class="card ticket-card"
+                             th:data-ticket-id="${ticket.id}"
+                             th:data-ticket-price="${ticket.price}">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">Сектор: <span th:text="${ticket.sector.name}"></span></h6>
+                                        <p class="mb-0 small">Ряд: <span th:text="${ticket.rowNumber}"></span>, Место: <span th:text="${ticket.seatNumber}"></span></p>
+                                    </div>
+                                    <div class="text-end">
+                                        <span class="badge bg-success fs-6">£<span th:text="${ticket.price}"></span></span>
+                                        <button class="btn btn-sm btn-primary mt-2" onclick="addToCart(this)">В корзину</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:unless="${tickets != null and !tickets.empty}" class="alert alert-warning">
+                😔 Нет доступных билетов в выбранном секторе
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Скрипты для этой страницы -->
+<th:block layout:fragment="scripts">
+    <script>
+        console.log('Match detail scripts loaded');
+
+        function filterBySector(element) {
+            const sectorId = element.getAttribute('data-sector-id');
+            const matchId = window.location.pathname.split('/').pop();
+            window.location.href = '/match/' + matchId + '?sectorId=' + sectorId;
+        }
+
+        function addToCart(button) {
+            const ticketCard = button.closest('.ticket-card');
+            const ticketId = ticketCard.getAttribute('data-ticket-id');
+            const matchId = window.location.pathname.split('/').pop();
+
+            fetch('/cart/add/' + ticketId, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'matchId=' + matchId
+            }).then(() => {
+                button.textContent = '✓ Добавлено!';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-success');
+                setTimeout(() => {
+                    button.textContent = 'В корзину';
+                    button.classList.remove('btn-success');
+                    button.classList.add('btn-primary');
+                }, 1500);
+            });
+        }
+
+        function updateCartCount() {
+            fetch('/cart/count')
+                .then(response => response.json())
+                .then(data => {
+                    const cartCountSpan = document.getElementById('cartCount');
+                    if (data && data.count > 0) {
+                        cartCountSpan.textContent = data.count;
+                        cartCountSpan.style.display = 'inline-block';
+                    } else {
+                        cartCountSpan.style.display = 'none';
+                    }
+                });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCartCount();
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const selectedSectorId = urlParams.get('sectorId');
+            if (selectedSectorId) {
+                document.querySelectorAll('.sector').forEach(sector => {
+                    if (sector.getAttribute('data-sector-id') === selectedSectorId) {
+                        sector.classList.add('active');
+                    }
+                });
+            }
+        });
+    </script>
+</th:block>
+</body>
+</html>

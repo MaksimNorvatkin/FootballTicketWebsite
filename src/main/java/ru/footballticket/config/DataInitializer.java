@@ -4,7 +4,7 @@ import ru.footballticket.entity.*;
 import ru.footballticket.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.security.crypto.password.PasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -17,21 +17,21 @@ public class DataInitializer implements CommandLineRunner {
     private final MatchRepository matchRepository;
     private final StadiumSectorRepository sectorRepository;
     private final TicketRepository ticketRepository;
-    private final PasswordEncoder passwordEncoder;
+    //private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
         // Создаем пользователей
         User admin = new User();
         admin.setEmail("admin@footballticket.ru");
-        admin.setPassword(passwordEncoder.encode("admin123"));
+        admin.setPassword("admin123");
         admin.setRole(User.Role.ADMIN);
         admin.setFullName("System Administrator");
         userRepository.save(admin);
 
         User manager = new User();
         manager.setEmail("manager@footballticket.ru");
-        manager.setPassword(passwordEncoder.encode("manager123"));
+        manager.setPassword("manager123");
         manager.setRole(User.Role.MANAGER);
         manager.setFullName("Ticket Manager");
         userRepository.save(manager);

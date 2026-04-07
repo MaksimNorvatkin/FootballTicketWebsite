@@ -20,4 +20,7 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     @Query("SELECT MAX(t.price) FROM Ticket t WHERE t.match.id = :matchId AND t.status = 'AVAILABLE'")
     Double findMaxPriceByMatchId(@Param("matchId") Long matchId);
+
+    List<Ticket> findByOrderId(Long orderId);
+
 }
