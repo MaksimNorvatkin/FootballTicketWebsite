@@ -34,7 +34,7 @@ public class OrderController {
         }
         model.addAttribute("cartItems", cartService.getItems());
         model.addAttribute("totalAmount", cartService.getTotalAmount());
-        return "checkout";
+        return "order/checkout";
     }
 
     @PostMapping("/checkout/submit")
@@ -72,12 +72,12 @@ public class OrderController {
         model.addAttribute("totalAmount", order.getTotalAmount());
         model.addAttribute("customerEmail", customerEmail);
 
-        return "order-success";
+        return "order/order-success";
     }
 
     @GetMapping("/track-order")
     public String trackOrderForm() {
-        return "track-order";
+        return "order/track-order";
     }
 
     @PostMapping("/track-order")
@@ -94,6 +94,6 @@ public class OrderController {
         } else {
             model.addAttribute("error", "Заказ не найден. Проверьте номер заказа и email.");
         }
-        return "track-order";
+        return "order/track-order";
     }
 }

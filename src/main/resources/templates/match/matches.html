@@ -2,6 +2,9 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
 <head>
     <title>Все матчи АПЛ</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/matches.css}">
+    </th:block>
 </head>
 <body>
 <div layout:fragment="content">
@@ -97,15 +100,5 @@
         <a href="/matches" class="btn btn-primary">Показать все матчи</a>
     </div>
 </div>
-
-<style>
-    .hover-shadow {
-        transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .hover-shadow:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-</style>
 </body>
 </html>

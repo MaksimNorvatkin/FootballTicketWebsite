@@ -1,0 +1,14 @@
+/* footer.css */
+.footer-custom {
+    background-color: #dc3545 !important;
+    margin-top: 50px !important;
+}
+
+.footer-custom a {
+    color: white;
+    text-decoration: none;
+}
+
+.footer-custom a:hover {
+    text-decoration: underline;
+}

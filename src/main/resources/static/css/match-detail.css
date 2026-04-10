@@ -1,0 +1,121 @@
+/* match-detail.css */
+.simple-stadium {
+    background: linear-gradient(145deg, #2d5a2c 0%, #1a3f19 100%);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.top-row, .bottom-row {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 10px 0;
+}
+
+.middle-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.middle-row .simple-sector {
+    flex-shrink: 0;
+    height: 120px;
+}
+
+.simple-sector {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid #ffffff;
+    border-radius: 12px;
+    text-align: center;
+    padding: 12px 18px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+    /* Убираем min-width и задаём фиксированную ширину */
+    width: 100px;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    /* Добавляем для одинаковой высоты */
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.simple-sector:hover {
+    transform: translateY(-3px) scale(1.05);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    filter: brightness(1.1);
+    border-color: #ffd700;
+}
+
+.simple-sector.active {
+    border: 3px solid #ffd700;
+    background-color: rgba(255,215,0,0.3) !important;
+    box-shadow: 0 0 20px rgba(255,215,0,0.5);
+    transform: scale(1.02);
+}
+
+.simple-pitch {
+    background: linear-gradient(180deg, #3a8c3a 0%, #2d6b2d 100%);
+    border-radius: 10px;
+    padding: 15px;
+    border: 3px solid #ffd700;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.simple-pitch-image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Стили для билетов */
+.ticket-card {
+    transition: all 0.2s;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+.ticket-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-color: #28a745;
+}
+
+.price-range {
+    background: linear-gradient(90deg, #28a745, #ffc107);
+    border-radius: 10px;
+    padding: 10px;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .simple-sector {
+        width: 65px;
+        height: 40px;
+        font-size: 10px;
+        padding: 6px 8px;
+    }
+
+    .simple-pitch-image {
+        max-width: 100px;
+    }
+
+    .top-row, .bottom-row {
+        gap: 8px;
+    }
+
+    .middle-row {
+        gap: 8px;
+    }
+}

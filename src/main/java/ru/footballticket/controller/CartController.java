@@ -21,7 +21,7 @@ public class CartController {
         model.addAttribute("cartItems", cartService.getItems());
         model.addAttribute("totalAmount", cartService.getTotalAmount());
         model.addAttribute("itemCount", cartService.getItemCount());
-        return "cart";
+        return "order/cart";
     }
 
     @PostMapping("/add/{ticketId}")

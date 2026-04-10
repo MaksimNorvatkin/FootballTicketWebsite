@@ -46,6 +46,6 @@ public class MatchController {
         model.addAttribute("minPrice", ticketService.getMinPriceByMatch(id));
         model.addAttribute("maxPrice", ticketService.getMaxPriceByMatch(id));
 
-        return "match-detail";
+        return "match/match-detail";
     }
 }

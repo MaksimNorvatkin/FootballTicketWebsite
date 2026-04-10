@@ -50,8 +50,8 @@ public class DataInitializer implements CommandLineRunner {
                 LocalDateTime.now().plusDays(21), 88);
 
         // Создаем 6 секторов и билеты для каждого матча
-        String[] sectors = {"North", "South", "East", "West", "NorthEast", "SouthWest"};
-        Double[] multipliers = {1.0, 1.0, 0.8, 0.8, 1.5, 1.5};
+        String[] sectors = {"North", "NorthEast", "East", "West", "South", "SouthWest"};
+        Double[] multipliers = {1.0, 1.5, 0.8, 0.8, 1.0, 1.5};
 
         for (Match match : Arrays.asList(match1, match2, match3)) {
             for (int i = 0; i < sectors.length; i++) {
@@ -100,7 +100,14 @@ public class DataInitializer implements CommandLineRunner {
     }
 
     private String getColorForSector(int index) {
-        String[] colors = {"#3498db", "#2ecc71", "#f39c12", "#e74c3c", "#9b59b6", "#1abc9c"};
+        String[] colors = {
+                "#e74c3c",  // North - красный
+                "#e67e22",  // NorthEast - оранжевый
+                "#f1c40f",  // East - жёлтый
+                "#2ecc71",  // West - зелёный
+                "#3498db",  // South - синий
+                "#9b59b6"   // SouthWest - фиолетовый
+        };
         return colors[index % colors.length];
     }
 }

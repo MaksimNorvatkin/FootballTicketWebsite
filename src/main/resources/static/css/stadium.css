@@ -1,0 +1,44 @@
+/* stadium.css - стили для стадиона */
+.stadium {
+    background: linear-gradient(145deg, #2d5a2c 0%, #1a3f19 100%);
+    border-radius: 50%;
+    padding: 20px;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.stadium-pitch {
+    background: linear-gradient(180deg, #3a8c3a 0%, #2d6b2d 100%);
+    border-radius: 10px;
+    padding: 15px;
+    border: 2px solid #ffd700;
+}
+
+.sector {
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid #fff;
+    border-radius: 8px;
+    text-align: center;
+    padding: 15px 5px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.5);
+}
+
+.sector:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    filter: brightness(1.1);
+}
+
+.sector.active {
+    border: 3px solid #ffd700;
+    box-shadow: 0 0 15px rgba(255,215,0,0.5);
+}
+
+.price-range {
+    background: linear-gradient(90deg, #28a745, #ffc107);
+    border-radius: 10px;
+    padding: 10px;
+}

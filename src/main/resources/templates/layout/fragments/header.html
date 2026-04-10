@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/header.css}">
+</head>
+<body>
+<nav th:fragment="header" class="navbar navbar-expand-lg navbar-custom">
+    <div class="container">
+        <a class="navbar-brand text-white fw-bold" href="/">⚽ FootballTicket</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-white" href="/matches">Матчи</a>
+                </li>
+            </ul>
+
+            <!-- Поиск по центру - 1/3 ширины -->
+            <div class="search-container">
+                <form class="d-flex" action="/search" method="get">
+                    <input class="form-control search-input" type="search" name="query"
+                           placeholder="🔍 Поиск матчей, команд, стадионов..." aria-label="Search">
+                </form>
+            </div>
+
+            <!-- Правая часть с кнопками -->
+            <div class="navbar-nav-right">
+                <a href="/track-order" class="nav-link-custom text-decoration-none">
+                    🎫 Отследить заказ
+                </a>
+                <a href="/cart" class="nav-link-custom text-decoration-none cart-badge">
+                    🛒 Корзина
+                    <span id="cartCount" class="cart-count" style="display: none;">0</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script th:src="@{/js/header.js}"></script>
+</body>
+</html>

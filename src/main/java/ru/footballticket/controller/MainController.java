@@ -62,7 +62,7 @@ public class MainController {
         // Добавляем счетчик результатов
         model.addAttribute("matchesCount", matches.size());
 
-        return "matches";
+        return "match/matches";
     }
 
     @GetMapping("/search")
@@ -76,6 +76,6 @@ public class MainController {
             model.addAttribute("matches", List.of());
             model.addAttribute("matchesCount", 0);
         }
-        return "search-results";
+        return "search/search-results";
     }
 }
