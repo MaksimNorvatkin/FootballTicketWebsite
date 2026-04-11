@@ -1,51 +1,16 @@
 // match-detail.js
 let currentPage = 0;
 let currentSectorId = null;
-let totalTickets = 0;
+let totalTickets = parseInt(document.getElementById('tickets-count')?.innerText || 0);
 const pageSize = 10;
 
-// Добавление в корзину
-function addToCart(button) {
-    const ticketCard = button.closest('.ticket-card');
-    const ticketId = ticketCard.getAttribute('data-ticket-id');
-    const matchId = window.location.pathname.split('/').pop();
-
-    fetch('/cart/add/' + ticketId, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: 'matchId=' + matchId
-    }).then(() => {
-        // Меняем на кнопку "Удалить"
-        button.textContent = '🗑️ Удалить';
-        button.classList.remove('btn-primary');
-        button.classList.add('btn-danger');
-        button.setAttribute('onclick', 'removeFromCart(this)');
-        updateCartCount();
-    }).catch(error => console.error('Error adding to cart:', error));
+// Проверка, находится ли билет в корзине
+function isTicketInCart(ticketId) {
+    return fetch(`/cart/check/${ticketId}`)
+        .then(response => response.json())
+        .then(data => data.inCart)
+        .catch(() => false);
 }
-
-// Удаление из корзины
-function removeFromCart(button) {
-    const ticketCard = button.closest('.ticket-card');
-    const ticketId = ticketCard.getAttribute('data-ticket-id');
-    const matchId = window.location.pathname.split('/').pop();
-
-    fetch('/cart/remove/' + ticketId, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
-    }).then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Возвращаем кнопку "В корзину"
-                button.textContent = 'В корзину';
-                button.classList.remove('btn-danger');
-                button.classList.add('btn-primary');
-                button.setAttribute('onclick', 'addToCart(this)');
-                updateCartCount();
-            }
-        }).catch(error => console.error('Error removing from cart:', error));
-}
-
 // Фильтр по сектору
 window.filterBySector = function(element) {
     const sectorId = element.getAttribute('data-sector-id');
@@ -188,24 +153,6 @@ function updatePriceRange(minPrice, maxPrice) {
             </div>
         `;
     }
-}
-
-// Обновление счетчика корзины
-function updateCartCount() {
-    fetch('/cart/count')
-        .then(response => response.json())
-        .then(data => {
-            const cartCountSpan = document.getElementById('cartCount');
-            if (cartCountSpan) {
-                if (data.count > 0) {
-                    cartCountSpan.textContent = data.count;
-                    cartCountSpan.style.display = 'inline-block';
-                } else {
-                    cartCountSpan.style.display = 'none';
-                }
-            }
-        })
-        .catch(error => console.error('Error fetching cart count:', error));
 }
 
 // Подсветка активного сектора
