@@ -17,17 +17,20 @@ public class Match {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String homeTeam;
+    @ManyToOne
+    @JoinColumn(name = "home_team_id")
+    private Team homeTeam;
 
-    @Column(nullable = false)
-    private String awayTeam;
+    @ManyToOne
+    @JoinColumn(name = "away_team_id")
+    private Team awayTeam;
 
     @Column(nullable = false)
     private String city;
 
-    @Column(nullable = false)
-    private String stadium;
+    @ManyToOne
+    @JoinColumn(name = "stadium_id")
+    private Stadium stadium;
 
     @Column(nullable = false)
     private LocalDateTime matchDateTime;

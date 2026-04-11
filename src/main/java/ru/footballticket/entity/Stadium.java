@@ -24,7 +24,4 @@ public class Stadium {
 
     @Column(name = "image_url")
     private String imageUrl;  // Для будущего: URL в облачном хранилище (AWS S3)
-
-    @OneToOne(mappedBy = "stadium")
-    private Match match;
 }
