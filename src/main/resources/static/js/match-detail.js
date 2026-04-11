@@ -170,6 +170,22 @@ function highlightActiveSector() {
     }
 }
 
+// Сброс фильтра (без перезагрузки страницы)
+window.resetFilter = function() {
+    // Убираем подсветку активного сектора
+    document.querySelectorAll('.simple-sector').forEach(sector => {
+        sector.classList.remove('active');
+    });
+
+    // Сбрасываем текущий сектор
+    currentSectorId = null;
+    currentPage = 0;
+
+    // Загружаем все билеты (без фильтра по сектору)
+    const matchId = window.location.pathname.split('/').pop();
+    loadTickets(matchId, null, 0, true);
+};
+
 // Инициализация
 document.addEventListener('DOMContentLoaded', function() {
     totalTickets = parseInt(document.getElementById('tickets-count')?.textContent || '0');
