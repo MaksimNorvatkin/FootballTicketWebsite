@@ -12,21 +12,34 @@
 <body>
 <div layout:fragment="content">
     <!-- Информация о матче -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h2 class="mb-0" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h2>
-        </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <p><strong>🏟️ Стадион:</strong> <span th:text="${match.stadium}"></span></p>
-                    <p><strong>🏙️ Город:</strong> <span th:text="${match.city}"></span></p>
-                    <p><strong>📅 Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span></p>
+    <div class="match-info-card">
+        <div class="row g-0">
+            <!-- Картинка стадиона (1/4 ширины, во всю высоту) -->
+            <div class="col-md-3 stadium-image-container">
+                <img th:src="@{/images/stadium-placeholder.jpg}"
+                     alt="Stadium"
+                     class="stadium-image"
+                     onerror="this.src='https://via.placeholder.com/300x200?text=🏟️+Stadium'">
+            </div>
+
+            <!-- Блок информации (центр) -->
+            <div class="col-md-6">
+                <div class="match-info">
+                    <h2 class="match-title" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h2>
+                    <div class="match-details">
+                        <p><span class="info-icon">🏟️</span> <strong>Стадион:</strong> <span th:text="${match.stadium}"></span></p>
+                        <p><span class="info-icon">🏙️</span> <strong>Город:</strong> <span th:text="${match.city}"></span></p>
+                        <p><span class="info-icon">📅</span> <strong>Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span></p>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="price-range text-white text-center">
-                        <h5 class="mb-0">💰 Диапазон цен билетов</h5>
-                        <h3>£<span th:text="${minPrice}"></span> - £<span th:text="${maxPrice}"></span></h3>
+            </div>
+
+            <!-- Диапазон цен (1/4 ширины) -->
+            <div class="col-md-3">
+                <div class="price-range-card" id="price-range">
+                    <div class="price-range-title">💰 Диапазон цен</div>
+                    <div class="price-range-values">
+                        £<span th:text="${minPrice}"></span> - £<span th:text="${maxPrice}"></span>
                     </div>
                 </div>
             </div>
@@ -34,95 +47,103 @@
     </div>
 
     <div class="row">
-        <!-- Простая схема стадиона -->
-        <div class="col-md-5 mb-4">
-            <h4 class="text-center mb-3">🏟️ Схема стадиона</h4>
-            <div class="simple-stadium">
-                <!-- Верхний ряд -->
-                <div class="simple-sectors-row top-row">
-                    <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
-                         th:if="${iterStat.index == 0 or iterStat.index == 1}"
-                         th:data-sector-id="${sector.id}"
-                         th:style="'background-color: ' + ${sector.color}"
-                         th:text="${sector.name}"
-                         onclick="filterBySector(this)">
-                    </div>
-                </div>
-
-                <!-- Средний ряд с полем -->
-                <div class="simple-sectors-row middle-row">
-                    <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
-                         th:if="${iterStat.index == 2}"
-                         th:data-sector-id="${sector.id}"
-                         th:style="'background-color: ' + ${sector.color}"
-                         th:text="${sector.name}"
-                         onclick="filterBySector(this)">
-                    </div>
-                    <div class="simple-pitch">
-                        <img th:src="@{/images/football-pitch.png}"
-                             alt="Football Pitch"
-                             class="simple-pitch-image">
-                    </div>
-                    <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
-                         th:if="${iterStat.index == 3}"
-                         th:data-sector-id="${sector.id}"
-                         th:style="'background-color: ' + ${sector.color}"
-                         th:text="${sector.name}"
-                         onclick="filterBySector(this)">
-                    </div>
-                </div>
-
-                <!-- Нижний ряд -->
-                <div class="simple-sectors-row bottom-row">
-                    <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
-                         th:if="${iterStat.index == 4 or iterStat.index == 5}"
-                         th:data-sector-id="${sector.id}"
-                         th:style="'background-color: ' + ${sector.color}"
-                         th:text="${sector.name}"
-                         onclick="filterBySector(this)">
-                    </div>
-                </div>
-            </div>
-            <div class="text-center mt-3">
-                <small class="text-muted">⚽ Нажмите на сектор для фильтрации билетов</small>
-            </div>
-            <div class="text-center mt-2">
-                <a th:href="'/match/' + ${match.id}" class="btn btn-outline-secondary btn-sm">Сбросить фильтр</a>
-            </div>
-        </div>
-
         <!-- Список билетов -->
-        <div class="col-md-7">
+        <div class="col-md-7 mb-4">
             <h4 class="mb-3">🎫 Доступные билеты</h4>
-            <div th:if="${tickets != null and !tickets.empty}">
-                <p class="text-muted">Найдено билетов: <strong th:text="${tickets.size()}"></strong></p>
-                <div class="row">
-                    <div class="col-md-6 mb-3" th:each="ticket : ${tickets}">
-                        <div class="card ticket-card"
+            <p class="text-muted">Найдено билетов: <strong id="tickets-count" th:text="${totalTickets}">0</strong></p>
+            <div id="tickets-container">
+                <div th:if="${tickets != null and !tickets.empty}">
+                    <div id="tickets-list" class="tickets-list">
+                        <div class="ticket-item" th:each="ticket : ${tickets}"
                              th:data-ticket-id="${ticket.id}"
                              th:data-ticket-price="${ticket.price}">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div>
-                                        <h6 class="mb-1">Сектор: <span th:text="${ticket.sector.name}"></span></h6>
-                                        <p class="mb-0 small">Ряд: <span th:text="${ticket.rowNumber}"></span>, Место: <span th:text="${ticket.seatNumber}"></span></p>
-                                    </div>
-                                    <div class="text-end">
-                                        <span class="badge bg-success fs-6">£<span th:text="${ticket.price}"></span></span>
-                                        <button class="btn btn-sm btn-primary mt-2" onclick="addToCart(this)">В корзину</button>
+                            <div class="card ticket-card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">Сектор: <span th:text="${ticket.sector.name}"></span></h6>
+                                            <p class="mb-0 small">Ряд: <span th:text="${ticket.rowNumber}"></span>, Место: <span th:text="${ticket.seatNumber}"></span></p>
+                                        </div>
+                                        <div class="text-end">
+                                            <span class="badge bg-success fs-6 price-badge">£<span th:text="${ticket.price}"></span></span>
+                                            <button class="btn btn-sm btn-primary" onclick="addToCart(this)">В корзину</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div th:unless="${tickets != null and !tickets.empty}" class="alert alert-warning">
+                    😔 Нет доступных билетов в выбранном секторе
+                </div>
             </div>
-            <div th:unless="${tickets != null and !tickets.empty}" class="alert alert-warning">
-                😔 Нет доступных билетов в выбранном секторе
+
+            <div id="load-more-container" class="text-center mt-3" th:if="${hasMore}">
+                <button id="load-more-btn" class="btn btn-outline-primary" onclick="loadMoreTickets()">
+                    Показать еще билеты ↓
+                </button>
             </div>
         </div>
-    </div>
-</div>
+
+        <!-- Схема стадиона (с sticky) -->
+        <div class="col-md-5 mb-4">
+            <div class="sticky-stadium">
+                <h4 class="text-center mb-3"><span th:text="${match.stadium}"></span></h4>
+                <div class="simple-stadium">
+                    <!-- Верхний ряд -->
+                    <div class="simple-sectors-row top-row">
+                        <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
+                             th:if="${iterStat.index == 0 or iterStat.index == 1}"
+                             th:data-sector-id="${sector.id}"
+                             th:style="'background-color: ' + ${sector.color}"
+                             th:text="${sector.name}"
+                             onclick="filterBySector(this)">
+                        </div>
+                    </div>
+
+                    <!-- Средний ряд с полем -->
+                    <div class="simple-sectors-row middle-row">
+                        <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
+                             th:if="${iterStat.index == 2}"
+                             th:data-sector-id="${sector.id}"
+                             th:style="'background-color: ' + ${sector.color}"
+                             th:text="${sector.name}"
+                             onclick="filterBySector(this)">
+                        </div>
+                        <div class="simple-pitch">
+                            <img th:src="@{/images/football-pitch.png}"
+                                 alt="Football Pitch"
+                                 class="simple-pitch-image">
+                        </div>
+                        <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
+                             th:if="${iterStat.index == 3}"
+                             th:data-sector-id="${sector.id}"
+                             th:style="'background-color: ' + ${sector.color}"
+                             th:text="${sector.name}"
+                             onclick="filterBySector(this)">
+                        </div>
+                    </div>
+
+                    <!-- Нижний ряд -->
+                    <div class="simple-sectors-row bottom-row">
+                        <div class="simple-sector" th:each="sector, iterStat : ${sectors}"
+                             th:if="${iterStat.index == 4 or iterStat.index == 5}"
+                             th:data-sector-id="${sector.id}"
+                             th:style="'background-color: ' + ${sector.color}"
+                             th:text="${sector.name}"
+                             onclick="filterBySector(this)">
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center mt-3">
+                    <small class="text-muted">⚽ Нажмите на сектор для фильтрации билетов</small>
+                </div>
+                <div class="text-center mt-2">
+                    <a th:href="'/match/' + ${match.id}" class="btn btn-outline-secondary btn-sm">Сбросить фильтр</a>
+                </div>
+            </div>
+        </div>
 
 <th:block layout:fragment="scripts">
     <script th:src="@{/js/match-detail.js}"></script>

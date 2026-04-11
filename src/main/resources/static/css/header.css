@@ -1,9 +1,10 @@
 /* header.css */
 .navbar-custom {
     background-color: #dc3545 !important;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    /* пока убрал прилипание */
+    /*position: sticky;*/
+    /*top: 0;*/
+    /*z-index: 1000;*/
     transition: all 0.3s ease;
 }
 

@@ -33,15 +33,20 @@ public class CartController {
         return "redirect:/cart";
     }
 
+    @PostMapping("/remove/{ticketId}")
+    @ResponseBody
+    public Map<String, Object> removeFromCart(@PathVariable Long ticketId) {
+        cartService.removeTicket(ticketId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("itemCount", cartService.getItemCount());
+        response.put("totalAmount", cartService.getTotalAmount());
+        return response;
+    }
+
     @PostMapping("/update/{ticketId}")
     public String updateQuantity(@PathVariable Long ticketId, @RequestParam int quantity) {
         cartService.updateQuantity(ticketId, quantity);
-        return "redirect:/cart";
-    }
-
-    @PostMapping("/remove/{ticketId}")
-    public String removeFromCart(@PathVariable Long ticketId) {
-        cartService.removeTicket(ticketId);
         return "redirect:/cart";
     }
 
@@ -56,6 +61,14 @@ public class CartController {
     public Map<String, Integer> getCartCount() {
         Map<String, Integer> response = new HashMap<>();
         response.put("count", cartService.getItemCount());
+        return response;
+    }
+
+    @GetMapping("/check/{ticketId}")
+    @ResponseBody
+    public Map<String, Boolean> checkInCart(@PathVariable Long ticketId) {
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("inCart", cartService.getItems().containsKey(ticketId));
         return response;
     }
 }

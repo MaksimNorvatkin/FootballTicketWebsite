@@ -2,6 +2,8 @@ package ru.footballticket.repository;
 
 import ru.footballticket.entity.Ticket;
 import ru.footballticket.entity.Ticket.TicketStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -13,7 +15,11 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     List<Ticket> findByMatchIdAndStatus(Long matchId, TicketStatus status);
 
+    Page<Ticket> findByMatchIdAndStatus(Long matchId, TicketStatus status, Pageable pageable);
+
     List<Ticket> findByMatchIdAndSectorIdAndStatus(Long matchId, Long sectorId, TicketStatus status);
+
+    Page<Ticket> findByMatchIdAndSectorIdAndStatus(Long matchId, Long sectorId, TicketStatus status, Pageable pageable);
 
     @Query("SELECT MIN(t.price) FROM Ticket t WHERE t.match.id = :matchId AND t.status = 'AVAILABLE'")
     Double findMinPriceByMatchId(@Param("matchId") Long matchId);
@@ -22,5 +28,4 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Double findMaxPriceByMatchId(@Param("matchId") Long matchId);
 
     List<Ticket> findByOrderId(Long orderId);
-
 }
