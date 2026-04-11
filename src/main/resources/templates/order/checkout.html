@@ -48,7 +48,7 @@
                     <div th:each="entry : ${cartItems}">
                         <div class="d-flex justify-content-between mb-2">
                                 <span>
-                                    <strong th:text="${entry.value.ticket.match.homeTeam} + ' vs ' + ${entry.value.ticket.match.awayTeam}"></strong><br>
+                                    <strong th:text="${entry.value.ticket.match.homeTeam.name} + ' vs ' + ${entry.value.ticket.match.awayTeam.name}"></strong><br>
                                     <small>Сектор <span th:text="${entry.value.ticket.sector.name}"></span>,
                                            Ряд <span th:text="${entry.value.ticket.rowNumber}"></span>,
                                            Место <span th:text="${entry.value.ticket.seatNumber}"></span>

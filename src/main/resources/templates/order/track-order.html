@@ -78,7 +78,7 @@
                         </thead>
                         <tbody>
                         <tr th:each="ticket : ${tickets}">
-                            <td th:text="${ticket.match.homeTeam} + ' vs ' + ${ticket.match.awayTeam}"></td>
+                            <td th:text="${ticket.match.homeTeam.name} + ' vs ' + ${ticket.match.awayTeam.name}"></td>
                             <td th:text="${ticket.sector.name}"></td>
                             <td th:text="${ticket.rowNumber}"></td>
                             <td th:text="${ticket.seatNumber}"></td>

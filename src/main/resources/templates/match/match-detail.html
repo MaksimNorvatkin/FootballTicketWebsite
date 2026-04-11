@@ -3,7 +3,7 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layout/main}">
 <head>
-    <title th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam} + ' - Билеты'"></title>
+    <title th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name} + ' - Билеты'"></title>
 
     <th:block layout:fragment="styles">
         <link rel="stylesheet" th:href="@{/css/match-detail.css}">
@@ -25,10 +25,10 @@
             <!-- Блок информации (центр) -->
             <div class="col-md-6">
                 <div class="match-info">
-                    <h2 class="match-title" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h2>
+                    <h2 class="match-title" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></h2>
                     <div class="match-details">
-                        <p><span class="info-icon">🏟️</span> <strong>Стадион:</strong> <span th:text="${match.stadium}"></span></p>
-                        <p><span class="info-icon">🏙️</span> <strong>Город:</strong> <span th:text="${match.city}"></span></p>
+                        <p><span class="info-icon">🏟️</span> <strong>Стадион:</strong> <span th:text="${match.stadium.name}"></span></p>
+                        <p><span class="info-icon">🏙️</span> <strong>Город:</strong> <span th:text="${match.stadium.city}"></span></p>
                         <p><span class="info-icon">📅</span> <strong>Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span></p>
                     </div>
                 </div>
@@ -89,7 +89,7 @@
         <!-- Схема стадиона (с sticky) -->
         <div class="col-md-5 mb-4">
             <div class="sticky-stadium">
-                <h4 class="text-center mb-3"><span th:text="${match.stadium}"></span></h4>
+                <h4 class="text-center mb-3"><span th:text="${match.stadium.name}"></span></h4>
                 <div class="simple-stadium">
                     <!-- Верхний ряд -->
                     <div class="simple-sectors-row top-row">

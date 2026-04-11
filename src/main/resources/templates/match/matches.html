@@ -71,12 +71,12 @@
                 <div class="card h-100 shadow-sm hover-shadow">
                     <div class="card-body">
                         <div class="text-center mb-3">
-                            <h4 class="card-title text-primary" th:text="${match.homeTeam} + ' vs ' + ${match.awayTeam}"></h4>
+                            <h4 class="card-title text-primary" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></h4>
                             <hr>
                         </div>
                         <p class="card-text">
-                            <strong>🏟️ Стадион:</strong> <span th:text="${match.stadium}"></span><br>
-                            <strong>🏙️ Город:</strong> <span th:text="${match.city}"></span><br>
+                            <strong>🏟️ Стадион:</strong> <span th:text="${match.stadium.name}"></span><br>
+                            <strong>🏙️ Город:</strong> <span th:text="${match.stadium.city}"></span><br>
                             <strong>📅 Дата и время:</strong>
                             <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span><br>
                             <strong>⭐ Популярность:</strong>

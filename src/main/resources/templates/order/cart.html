@@ -23,7 +23,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="entry : ${cartItems}">
-                    <td th:text="${entry.value.ticket.match.homeTeam} + ' vs ' + ${entry.value.ticket.match.awayTeam}"></td>
+                    <td th:text="${entry.value.ticket.match.homeTeam.name} + ' vs ' + ${entry.value.ticket.match.awayTeam.name}"></td>
                     <td th:text="${entry.value.ticket.sector.name}"></td>
                     <td th:text="${entry.value.ticket.rowNumber} + '/' + ${entry.value.ticket.seatNumber}"></td>
                     <td>£<span th:text="${entry.value.ticket.price}"></span></td>

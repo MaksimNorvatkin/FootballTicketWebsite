@@ -25,9 +25,6 @@ public class Match {
     @JoinColumn(name = "away_team_id")
     private Team awayTeam;
 
-    @Column(nullable = false)
-    private String city;
-
     @ManyToOne
     @JoinColumn(name = "stadium_id")
     private Stadium stadium;

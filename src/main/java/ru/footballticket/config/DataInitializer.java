@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 //import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -17,10 +18,31 @@ public class DataInitializer implements CommandLineRunner {
     private final MatchRepository matchRepository;
     private final StadiumSectorRepository sectorRepository;
     private final TicketRepository ticketRepository;
+    private final TeamRepository teamRepository;
+    private final StadiumRepository stadiumRepository;
     //private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
+        // 1. Создаём стадионы
+        Stadium anfield = createStadium("Anfield Road", "Liverpool", 53394, "/images/stadiums/anfield.jpg");
+        Stadium emirates = createStadium("Emirates Stadium", "London", 60704, "/images/stadiums/emirates.jpg");
+        Stadium oldTrafford = createStadium("Old Trafford", "Manchester", 74879, "/images/stadiums/old-trafford.jpg");
+
+        // 2. Создаём команды
+        Team liverpool = createTeam("Liverpool", "Liverpool", anfield);
+        Team manCity = createTeam("Manchester City", "Manchester", null);
+        Team arsenal = createTeam("Arsenal", "London", emirates);
+        Team chelsea = createTeam("Chelsea", "London", null);
+        Team manUnited = createTeam("Manchester United", "Manchester", oldTrafford);
+        Team tottenham = createTeam("Tottenham", "London", null);
+
+        // 3. Создаём матчи
+        Match match1 = createMatch(liverpool, manCity, anfield, LocalDateTime.now().plusDays(7), 100);
+        Match match2 = createMatch(arsenal, chelsea, emirates, LocalDateTime.now().plusDays(14), 95);
+        Match match3 = createMatch(manUnited, tottenham, oldTrafford, LocalDateTime.now().plusDays(21), 88);
+
+
         // Создаем пользователей
         User admin = new User();
         admin.setEmail("admin@footballticket.ru");
@@ -35,20 +57,6 @@ public class DataInitializer implements CommandLineRunner {
         manager.setRole(User.Role.MANAGER);
         manager.setFullName("Ticket Manager");
         userRepository.save(manager);
-
-        // Создаем матчи
-        Match match1 = createMatch("Liverpool", "Manchester City",
-                "Liverpool", "Anfield Road",
-                LocalDateTime.now().plusDays(7), 100);
-
-        Match match2 = createMatch("Arsenal", "Chelsea",
-                "London", "Emirates Stadium",
-                LocalDateTime.now().plusDays(14), 95);
-
-        Match match3 = createMatch("Manchester United", "Tottenham",
-                "Manchester", "Old Trafford",
-                LocalDateTime.now().plusDays(21), 88);
-
         // Создаем 6 секторов и билеты для каждого матча
         String[] sectors = {"North", "NorthEast", "East", "West", "South", "SouthWest"};
         Double[] multipliers = {1.0, 1.5, 0.8, 0.8, 1.0, 1.5};
@@ -86,17 +94,32 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("📋 Manager: manager@footballticket.ru / manager123");
     }
 
-    private Match createMatch(String home, String away, String city,
-                              String stadium, LocalDateTime date, int popularity) {
+    private Match createMatch(Team home, Team away, Stadium stadium, LocalDateTime date, int popularity) {
         Match match = new Match();
         match.setHomeTeam(home);
         match.setAwayTeam(away);
-        match.setCity(city);
         match.setStadium(stadium);
         match.setMatchDateTime(date);
-        match.setDescription(home + " vs " + away + " - " + stadium);
+        match.setDescription(home.getName() + " vs " + away.getName() + " - " + stadium.getName());
         match.setPopularityScore(popularity);
         return matchRepository.save(match);
+    }
+
+    private Stadium createStadium(String name, String city, int capacity, String imageUrl) {
+        Stadium stadium = new Stadium();
+        stadium.setName(name);
+        stadium.setCity(city);
+        stadium.setCapacity(capacity);
+        stadium.setImageUrl(imageUrl);
+        return stadiumRepository.save(stadium);
+    }
+
+    private Team createTeam(String name, String city, Stadium stadium) {
+        Team team = new Team();
+        team.setName(name);
+        team.setCity(city);
+        team.setStadium(stadium);
+        return teamRepository.save(team);
     }
 
     private String getColorForSector(int index) {
