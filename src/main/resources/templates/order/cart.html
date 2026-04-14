@@ -35,17 +35,18 @@
                         </form>
                     </td>
                     <td>£<span th:text="${entry.value.subtotal}"></span></td>
+
                     <td>
-                        <form th:action="@{'/cart/remove/' + ${entry.key}}" method="post">
-                            <button type="submit" class="btn btn-sm btn-danger">Удалить</button>
-                        </form>
+                        <button class="btn btn-sm btn-danger"
+                                th:data-ticket-id="${entry.key}"
+                                onclick="removeFromCart(this)">Удалить</button>
                     </td>
                 </tr>
                 </tbody>
-                <tfoot class="table-light">
+                <tfoot class="table-light" >
                 <tr>
                     <td colspan="5" class="text-end"><strong>Итого:</strong></td>
-                    <td colspan="2"><strong>£<span th:text="${totalAmount}"></span></strong></td>
+                    <td colspan="2"><strong>£<span id="cart-total" th:text="${totalAmount}"></span></strong></td>
                 </tr>
                 </tfoot>
             </table>

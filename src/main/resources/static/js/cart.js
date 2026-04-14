@@ -36,10 +36,13 @@ function addToCart(button) {
     }).catch(error => console.error('Error adding to cart:', error));
 }
 
-// Удаление из корзины
+// Универсальное удаление из корзины
 function removeFromCart(button) {
-    const ticketItem = button.closest('.ticket-item');
-    const ticketId = ticketItem.getAttribute('data-ticket-id');
+    const ticketId = button.getAttribute('data-ticket-id');
+    if (!ticketId) {
+        console.error('ticketId not found', button);
+        return;
+    }
 
     fetch('/cart/remove/' + ticketId, {
         method: 'POST',
@@ -47,14 +50,48 @@ function removeFromCart(button) {
     }).then(response => response.json())
         .then(data => {
             if (data.success) {
-                // Меняем кнопку обратно на "В корзину"
-                button.textContent = 'В корзину';
-                button.classList.remove('btn-danger');
-                button.classList.add('btn-primary');
-                button.setAttribute('onclick', 'addToCart(this)');
+                // Проверяем, где находимся
+                if (button.closest('tr')) {
+                    // На странице корзины - удаляем строку
+                    const row = button.closest('tr');
+                    if (row) row.remove();
+                    updateCartTotal(data.totalAmount);
+                    if (data.itemCount === 0) {
+                        showEmptyCartMessage();
+                    }
+                } else {
+                    // На странице матча - меняем кнопку обратно на "В корзину"
+                    button.textContent = 'В корзину';
+                    button.classList.remove('btn-danger');
+                    button.classList.add('btn-primary');
+                    button.setAttribute('onclick', 'addToCart(this)');
+                }
                 updateCartCount();
             }
-        }).catch(error => console.error('Error removing from cart:', error));
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Обновление общей суммы в корзине
+function updateCartTotal(totalAmount) {
+    const totalElement = document.getElementById('cart-total');
+    if (totalElement) {
+        totalElement.textContent = totalAmount.toFixed(2);
+    }
+}
+
+// Показать сообщение о пустой корзине
+function showEmptyCartMessage() {
+    const cartContainer = document.querySelector('.cart-container');
+    if (cartContainer) {
+        cartContainer.innerHTML = `
+            <div class="alert alert-info text-center">
+                <h4>🛒 Корзина пуста</h4>
+                <p>Добавьте билеты на матчи, чтобы продолжить.</p>
+                <a href="/matches" class="btn btn-primary">Посмотреть матчи</a>
+            </div>
+        `;
+    }
 }
 
 function updateQuantity(ticketId, quantity) {

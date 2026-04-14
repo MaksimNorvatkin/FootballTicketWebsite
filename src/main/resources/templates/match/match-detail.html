@@ -66,7 +66,9 @@
                                         </div>
                                         <div class="text-end">
                                             <span class="badge bg-success fs-6 price-badge">£<span th:text="${ticket.price}"></span></span>
-                                            <button class="btn btn-sm btn-primary" onclick="addToCart(this)">В корзину</button>
+                                            <button class="btn btn-sm btn-primary"
+                                                    th:data-ticket-id="${ticket.id}"
+                                                    onclick="addToCart(this)">В корзину</button>
                                         </div>
                                     </div>
                                 </div>
