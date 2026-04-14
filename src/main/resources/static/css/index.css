@@ -1,0 +1,171 @@
+/* index.css - стили для главной страницы */
+
+.hero-section {
+    background: url('/images/hero-fon.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    border-radius: 16px;
+    margin-bottom: 2rem;
+    min-height: 300px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+}
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 16px;
+}
+
+.hero-section h1,
+.hero-section p,
+.hero-section .btn {
+    position: relative;
+    z-index: 1;
+}
+.hero-section .btn {
+    display: inline-block;
+    width: fit-content;
+    margin: 0 auto;
+}
+
+.hero-section .btn-primary {
+    background-color: white;
+    color: #dc3545;
+    border: none;
+    font-weight: 600;
+}
+
+.hero-section .btn-primary:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+}
+
+.matches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.match-card {
+    display: flex;
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.match-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.match-date-box {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    text-align: center;
+    padding: 20px 15px;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.date-month {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.date-day {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 5px 0;
+}
+
+.date-year {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.match-info-box {
+    flex: 1;
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.match-teams {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.match-detail-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.match-detail-info span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-buy {
+    background: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    width: fit-content;
+    transition: all 0.3s ease;
+}
+
+.btn-buy:hover {
+    background: #dc3545;
+    color: white;
+    text-decoration: none;
+}
+
+@media (max-width: 768px) {
+    .match-card {
+        flex-direction: column;
+    }
+
+    .match-date-box {
+        flex-direction: row;
+        justify-content: space-around;
+        padding: 10px;
+    }
+
+    .date-day {
+        font-size: 24px;
+    }
+
+    .match-teams {
+        font-size: 16px;
+    }
+}

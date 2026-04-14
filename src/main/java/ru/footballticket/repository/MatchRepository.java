@@ -34,4 +34,6 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
             "LOWER(m.stadium.city) LIKE LOWER(CONCAT('%', :query, '%')) OR " +
             "LOWER(m.stadium.name) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Match> searchMatches(@Param("query") String query);
+
+    List<Match> findTop3ByOrderByTicketsSoldDesc();
 }

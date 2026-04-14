@@ -1,8 +1,10 @@
 package ru.footballticket.controller;
 
+import ru.footballticket.entity.Match;
 import ru.footballticket.entity.Order;
 import ru.footballticket.entity.Ticket;
 import ru.footballticket.entity.Ticket.TicketStatus;
+import ru.footballticket.repository.MatchRepository;
 import ru.footballticket.repository.OrderRepository;
 import ru.footballticket.repository.TicketRepository;
 import ru.footballticket.repository.UserRepository;
@@ -26,6 +28,7 @@ public class OrderController {
     private final OrderRepository orderRepository;
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
+    private final MatchRepository matchRepository;
 
     @GetMapping("/checkout")
     public String checkout(Model model) {
@@ -64,7 +67,12 @@ public class OrderController {
             ticketsToSave.add(ticket);
         }
         ticketRepository.saveAll(ticketsToSave);
-
+    // После сохранения заказа, обновляем счётчик проданных билетов
+        for (Ticket ticket : ticketsToSave) {
+            Match match = ticket.getMatch();
+            match.setTicketsSold(match.getTicketsSold() + 1);
+            matchRepository.save(match);
+        }
         // Очищаем корзину
         cartService.clear();
 

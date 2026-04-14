@@ -22,7 +22,8 @@ public class MainController {
     @GetMapping("/")
     public String home(Model model) {
         // Популярные матчи (топ-5, покажем 3)
-        List<Match> popularMatches = matchRepository.findTop5ByOrderByPopularityScoreDesc();
+        // то до немножко изменил и теперь тут популярные билеты, так что название немного не верно
+        List<Match> popularMatches = matchRepository.findTop3ByOrderByTicketsSoldDesc();
         model.addAttribute("popularMatches", popularMatches.stream().limit(3).toList());
 
         // Ближайшие матчи (следующие 3)

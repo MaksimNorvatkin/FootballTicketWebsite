@@ -6,42 +6,55 @@
 <body>
 <div layout:fragment="content">
     <!-- Hero section -->
-    <div class="bg-primary text-white text-center py-5 mb-4 rounded">
+    <div class="hero-section text-center py-5 mb-4">
         <h1>Добро пожаловать в FootballTicket!</h1>
         <p class="lead">Официальные билеты на матчи Английской Премьер Лиги</p>
-        <a href="/matches" class="btn btn-light btn-lg">Купить билеты</a>
+        <a href="/matches" class="btn btn-primary btn-lg">Купить билеты</a>
     </div>
 
-    <!-- Популярные матчи -->
-    <h2 class="mb-4">⭐ Популярные матчи</h2>
-    <div class="row mb-5">
-        <div class="col-md-4" th:each="match : ${popularMatches}">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></h5>
-                    <p class="card-text">
-                        <strong>Город:</strong> <span th:text="${match.stadium.city}"></span><br>
-                        <strong>Стадион:</strong> <span th:text="${match.stadium.name}"></span><br>
-                        <strong>Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd.MM.yyyy HH:mm')}"></span>
-                    </p>
-                    <a th:href="'/match/' + ${match.id}" class="btn btn-primary">Выбрать билеты</a>
+    <div class="row">
+        <!-- Популярные матчи (левый столбец) -->
+        <div class="col-md-6">
+            <h2 class="mb-4">⭐ Популярные билеты</h2>
+            <div class="matches-list">
+                <div class="match-card" th:each="match : ${popularMatches}">
+                    <div class="match-date-box">
+                        <div class="date-month" th:text="${#temporals.format(match.matchDateTime, 'MMM')}"></div>
+                        <div class="date-day" th:text="${#temporals.format(match.matchDateTime, 'dd')}"></div>
+                        <div class="date-year" th:text="${#temporals.format(match.matchDateTime, 'yyyy')}"></div>
+                    </div>
+                    <div class="match-info-box">
+                        <div class="match-teams" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></div>
+                        <div class="match-detail-info">
+                            <span>🏟️ <span th:text="${match.stadium.name}"></span></span>
+                            <span>🏙️ <span th:text="${match.stadium.city}"></span></span>
+                            <span>⏰ <span th:text="${#temporals.format(match.matchDateTime, 'HH:mm')}"></span></span>
+                        </div>
+                        <a th:href="'/match/' + ${match.id}" class="btn-buy">🎫 Выбрать билеты →</a>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Ближайшие матчи -->
-    <h2 class="mb-4">📅 Ближайшие матчи</h2>
-    <div class="row">
-        <div class="col-md-4" th:each="match : ${upcomingMatches}">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></h5>
-                    <p class="card-text">
-                        <strong>Стадион:</strong> <span th:text="${match.stadium.name}"></span><br>
-                        <strong>Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd.MM.yyyy HH:mm')}"></span>
-                    </p>
-                    <a th:href="'/match/' + ${match.id}" class="btn btn-outline-primary">Купить билеты</a>
+        <!-- Ближайшие матчи (правый столбец) -->
+        <div class="col-md-6">
+            <h2 class="mb-4">📅 Ближайшие матчи</h2>
+            <div class="matches-list">
+                <div class="match-card" th:each="match : ${upcomingMatches}">
+                    <div class="match-date-box">
+                        <div class="date-month" th:text="${#temporals.format(match.matchDateTime, 'MMM')}"></div>
+                        <div class="date-day" th:text="${#temporals.format(match.matchDateTime, 'dd')}"></div>
+                        <div class="date-year" th:text="${#temporals.format(match.matchDateTime, 'yyyy')}"></div>
+                    </div>
+                    <div class="match-info-box">
+                        <div class="match-teams" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></div>
+                        <div class="match-detail-info">
+                            <span>🏟️ <span th:text="${match.stadium.name}"></span></span>
+                            <span>🏙️ <span th:text="${match.stadium.city}"></span></span>
+                            <span>⏰ <span th:text="${#temporals.format(match.matchDateTime, 'HH:mm')}"></span></span>
+                        </div>
+                        <a th:href="'/match/' + ${match.id}" class="btn-buy">🎫 Выбрать билеты →</a>
+                    </div>
                 </div>
             </div>
         </div>

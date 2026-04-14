@@ -42,6 +42,10 @@ public class DataInitializer implements CommandLineRunner {
         Match match2 = createMatch(arsenal, chelsea, emirates, LocalDateTime.now().plusDays(14), 95);
         Match match3 = createMatch(manUnited, tottenham, oldTrafford, LocalDateTime.now().plusDays(21), 88);
 
+        match1.setTicketsSold(145);
+        match2.setTicketsSold(98);
+        match3.setTicketsSold(667);
+        matchRepository.saveAll(Arrays.asList(match1, match2, match3));
 
         // Создаем пользователей
         User admin = new User();

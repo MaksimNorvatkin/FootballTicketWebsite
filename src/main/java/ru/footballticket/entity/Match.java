@@ -34,6 +34,9 @@ public class Match {
 
     private String description;
 
+    @Column(name = "tickets_sold")
+    private Integer ticketsSold = 0;
+
     @Column(name = "popularity_score")
     private Integer popularityScore = 0; // для популярных матчей
 
