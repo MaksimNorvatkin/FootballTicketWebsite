@@ -113,6 +113,7 @@ function renderTickets(tickets, reset) {
         `;
         ticketsList.insertAdjacentHTML('beforeend', ticketHtml);
     });
+    updateAllCartButtons();
 }
 
 // Обновление состояния всех кнопок корзины
@@ -130,11 +131,13 @@ function updateAllCartButtons() {
                     button.textContent = '🗑️ Удалить';
                     button.classList.remove('btn-primary');
                     button.classList.add('btn-danger');
+                    button.setAttribute('data-ticket-id', ticketId);
                     button.setAttribute('onclick', 'removeFromCart(this)');
                 } else {
                     button.textContent = 'В корзину';
                     button.classList.remove('btn-danger');
                     button.classList.add('btn-primary');
+                    button.setAttribute('data-ticket-id', ticketId);
                     button.setAttribute('onclick', 'addToCart(this)');
                 }
             })

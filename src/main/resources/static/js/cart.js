@@ -31,6 +31,7 @@ function addToCart(button) {
         button.textContent = '🗑️ Удалить';
         button.classList.remove('btn-primary');
         button.classList.add('btn-danger');
+        button.setAttribute('data-ticket-id', ticketId);
         button.setAttribute('onclick', 'removeFromCart(this)');
         updateCartCount();
     }).catch(error => console.error('Error adding to cart:', error));
