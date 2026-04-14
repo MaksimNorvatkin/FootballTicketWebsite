@@ -16,9 +16,10 @@
                     <th>Сектор</th>
                     <th>Ряд/Место</th>
                     <th>Цена</th>
-                    <th>Количество</th>
-                    <th>Сумма</th>
+<!--                    <th>Количество</th>-->
+<!--                    <th>Сумма</th>-->
                     <th></th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -27,16 +28,18 @@
                     <td th:text="${entry.value.ticket.sector.name}"></td>
                     <td th:text="${entry.value.ticket.rowNumber} + '/' + ${entry.value.ticket.seatNumber}"></td>
                     <td>£<span th:text="${entry.value.ticket.price}"></span></td>
-                    <td>
-                        <form th:action="@{'/cart/update/' + ${entry.key}}" method="post" class="d-inline">
-                            <input type="number" name="quantity" th:value="${entry.value.quantity}"
-                                   min="1" max="10" style="width: 70px;" class="form-control d-inline-block">
-                            <button type="submit" class="btn btn-sm btn-secondary">Обновить</button>
-                        </form>
-                    </td>
-                    <td>£<span th:text="${entry.value.subtotal}"></span></td>
 
-                    <td>
+<!--                    Функция обновить пока не нужна так как билеты по местам, в будующем будет без мест-->
+<!--                    <td>-->
+<!--                        <form th:action="@{'/cart/update/' + ${entry.key}}" method="post" class="d-inline">-->
+<!--                            <input type="number" name="quantity" th:value="${entry.value.quantity}"-->
+<!--                                   min="1" max="10" style="width: 70px;" class="form-control d-inline-block">-->
+<!--                            <button type="submit" class="btn btn-sm btn-secondary">Обновить</button>-->
+<!--                            <button type="button" class="btn btn-sm btn-secondary" onclick="updateQuantity('${entry.key}', document.getElementById('qty_${entry.key}').value)">Обновить</button>-->
+<!--                        </form>-->
+<!--                    </td>-->
+<!--                    <td>£<span th:text="${entry.value.subtotal}"></span></td>-->
+                    <td class="text-center">
                         <button class="btn btn-sm btn-danger"
                                 th:data-ticket-id="${entry.key}"
                                 onclick="removeFromCart(this)">Удалить</button>
@@ -45,8 +48,8 @@
                 </tbody>
                 <tfoot class="table-light" >
                 <tr>
-                    <td colspan="5" class="text-end"><strong>Итого:</strong></td>
-                    <td colspan="2"><strong>£<span id="cart-total" th:text="${totalAmount}"></span></strong></td>
+                    <td colspan="4" class="text-end"><strong>Итого:</strong></td>
+                    <td><strong>£<span id="cart-total" th:text="${totalAmount}"></span></strong></td>
                 </tr>
                 </tfoot>
             </table>

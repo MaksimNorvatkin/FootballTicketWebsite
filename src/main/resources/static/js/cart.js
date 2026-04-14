@@ -94,6 +94,7 @@ function showEmptyCartMessage() {
     }
 }
 
+
 function updateQuantity(ticketId, quantity) {
     fetch('/cart/update/' + ticketId, {
         method: 'POST',
