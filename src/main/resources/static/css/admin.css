@@ -178,6 +178,24 @@
     border-top: 1px solid rgba(0, 0, 0, 0.1);
     padding: 1rem 1.5rem;
 }
+/* Карточка сектора */
+.sector-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    height: 100%;
+}
+
+.sector-card-header {
+    padding: 1rem;
+    color: white;
+    text-shadow: 1px 1px 0 rgba(0,0,0,0.3);
+}
+
+.sector-card-body {
+    padding: 1.5rem;
+}
 /* Адаптация */
 @media (max-width: 768px) {
     .admin-card {

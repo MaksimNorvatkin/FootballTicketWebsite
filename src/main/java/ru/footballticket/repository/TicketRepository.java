@@ -17,8 +17,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
 
     Page<Ticket> findByMatchIdAndStatus(Long matchId, TicketStatus status, Pageable pageable);
 
-    List<Ticket> findByMatchIdAndSectorIdAndStatus(Long matchId, Long sectorId, TicketStatus status);
-
     Page<Ticket> findByMatchIdAndSectorIdAndStatus(Long matchId, Long sectorId, TicketStatus status, Pageable pageable);
 
     @Query("SELECT MIN(t.price) FROM Ticket t WHERE t.match.id = :matchId AND t.status = 'AVAILABLE'")
@@ -28,4 +26,6 @@ public interface TicketRepository extends JpaRepository<Ticket, Long> {
     Double findMaxPriceByMatchId(@Param("matchId") Long matchId);
 
     List<Ticket> findByOrderId(Long orderId);
+    List<Ticket> findByMatchIdAndSectorId(Long matchId, Long sectorId);
+    List<Ticket> findByMatchIdAndSectorIdAndStatus(Long matchId, Long sectorId, Ticket.TicketStatus status);
 }

@@ -226,14 +226,13 @@ public class AdminController {
      */
     private void createDefaultSectors(Match match) {
         String[] sectorNames = {"North", "NorthEast", "East", "West", "South", "SouthWest"};
-        Double[] multipliers = {1.0, 1.5, 0.8, 0.8, 1.0, 1.5};
         String[] colors = {"#e74c3c", "#e67e22", "#f1c40f", "#2ecc71", "#3498db", "#9b59b6"};
 
         for (int i = 0; i < sectorNames.length; i++) {
             StadiumSector sector = new StadiumSector();
             sector.setName(sectorNames[i]);
             sector.setColor(colors[i]);
-            sector.setPriceMultiplier(multipliers[i]);
+            sector.setPriceMultiplier(1.0);
             sector.setMatch(match);
             sectorRepository.save(sector);
         }
@@ -254,9 +253,20 @@ public class AdminController {
             Match match = matchRepository.findById(matchId).orElseThrow();
             StadiumSector sector = sectorRepository.findById(sectorId).orElseThrow();
 
-            // Удаляем старые билеты
-            List<Ticket> oldTickets = ticketRepository.findByMatchIdAndSectorId(matchId, sectorId);
-            ticketRepository.deleteAll(oldTickets);
+            // Проверяем, есть ли оплаченные билеты в этом секторе
+            List<Ticket> paidTickets = ticketRepository.findByMatchIdAndSectorIdAndStatus(
+                    matchId, sectorId, Ticket.TicketStatus.PAID);
+
+            if (!paidTickets.isEmpty()) {
+                response.put("success", false);
+                response.put("message", "Нельзя удалить сектор с оплаченными билетами! (" + paidTickets.size() + " шт.)");
+                return response;
+            }
+
+            // Удаляем только доступные билеты (AVAILABLE и RESERVED)
+            List<Ticket> availableTickets = ticketRepository.findByMatchIdAndSectorIdAndStatus(
+                    matchId, sectorId, Ticket.TicketStatus.AVAILABLE);
+            ticketRepository.deleteAll(availableTickets);
 
             // Создаём новые билеты
             int count = 0;
@@ -267,7 +277,7 @@ public class AdminController {
                             match.getId(), sector.getName(), row, seat));
                     ticket.setRowNumber(row);
                     ticket.setSeatNumber(seat);
-                    ticket.setPrice(basePrice * sector.getPriceMultiplier());
+                    ticket.setPrice(basePrice);
                     ticket.setStatus(Ticket.TicketStatus.AVAILABLE);
                     ticket.setMatch(match);
                     ticket.setSector(sector);
