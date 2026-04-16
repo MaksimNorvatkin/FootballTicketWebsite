@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Управление заказами</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/admin.css}">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>📦 Управление заказами</h2>
+        <a href="/admin" class="btn btn-outline-secondary">← Назад в админку</a>
+    </div>
+
+    <div class="alert alert-info">
+        <h5>📝 Управление заказами</h5>
+        <p>Здесь будет список заказов и возможность изменять их статусы.</p>
+        <p class="mb-0">Функционал в разработке...</p>
+    </div>
+</div>
+</body>
+</html>

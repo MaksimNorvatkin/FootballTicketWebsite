@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/main}">
+<head>
+    <title>Управление билетами</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/admin.css}">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>🎫 Управление билетами</h2>
+            <p class="text-muted" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name} + ' - ' + ${match.stadium.name}"></p>
+        </div>
+        <a href="/admin/matches" class="btn btn-outline-secondary">← Назад к матчам</a>
+    </div>
+
+    <div class="row">
+        <div th:each="sector : ${sectors}" class="col-md-6 mb-4">
+            <div class="sector-card">
+                <div class="sector-card-header" th:style="'background-color: ' + ${sector.color} + ';'">
+                    <h5 class="mb-0" th:text="${sector.name}">Сектор</h5>
+                </div>
+                <div class="sector-card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Цена билета (множитель: <span th:text="${sector.priceMultiplier}"></span>)</label>
+                        <div class="input-group">
+                            <span class="input-group-text">£</span>
+                            <input type="number" step="1" class="form-control" th:id="'price_' + ${sector.id}"
+                                   th:value="${sectorData.get(sector.name).get('tickets').isEmpty() ? 0 : sectorData.get(sector.name).get('tickets')[0].price}">
+                            <button class="btn btn-primary" th:onclick="'updatePrice(' + ${match.id} + ', ' + ${sector.id} + ')'">Обновить цену</button>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label">Рядов</label>
+                            <input type="number" id="rows_${sector.id}" class="form-control" value="10" min="1" max="20">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label">Мест в ряду</label>
+                            <input type="number" id="seats_${sector.id}" class="form-control" value="5" min="1" max="10">
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <span class="badge bg-info">Билетов: <span th:id="'count_' + ${sector.id}">0</span></span>
+                        </div>
+                        <button class="btn btn-success" th:onclick="'generateTickets(' + ${match.id} + ', ' + ${sector.id} + ')'">
+                            🎫 Сгенерировать билеты
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/admin-tickets.js}"></script>
+</th:block>
+</body>
+</html>

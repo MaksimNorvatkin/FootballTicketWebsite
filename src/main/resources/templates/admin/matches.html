@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Управление матчами</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/admin.css}">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>⚽ Управление матчами</h2>
+        <div>
+            <button class="btn btn-primary" onclick="openCreateModal()">
+                + Создать матч
+            </button>
+            <a href="/admin" class="btn btn-outline-secondary ms-2">← Назад в админку</a>
+        </div>
+    </div>
+
+    <!-- Таблица матчей -->
+    <div class="admin-table">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Хозяева</th>
+                <th>Гости</th>
+                <th>Стадион</th>
+                <th>Дата и время</th>
+                <th>Действия</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="match : ${matches}">
+                <td th:text="${match.id}">1</td>
+                <td th:text="${match.homeTeam.name}">Liverpool</td>
+                <td th:text="${match.awayTeam.name}">Man City</td>
+                <td th:text="${match.stadium.name}">Anfield</td>
+                <td th:text="${#temporals.format(match.matchDateTime, 'dd.MM.yyyy HH:mm')}">-</td>
+                <td>
+                    <a th:href="'/admin/matches/' + ${match.id} + '/tickets'" class="btn btn-sm btn-info">Билеты</a>
+                    <button class="btn btn-sm btn-danger" th:onclick="'deleteMatch(' + ${match.id} + ')'">Удалить</button>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- Модальное окно создания матча -->
+    <div id="createMatchModal" class="modal admin-modal" style="display: none;">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">➕ Создать новый матч</h5>
+                    <button type="button" class="btn-close" onclick="closeCreateModal()"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="createMatchForm" class="admin-form">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Команда хозяев *</label>
+                                <select id="homeTeamId" class="form-select" required>
+                                    <option value="">Выберите команду</option>
+                                    <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Команда гостей *</label>
+                                <select id="awayTeamId" class="form-select" required>
+                                    <option value="">Выберите команду</option>
+                                    <option th:each="team : ${teams}" th:value="${team.id}" th:text="${team.name}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Стадион *</label>
+                                <select id="stadiumId" class="form-select" required>
+                                    <option value="">Выберите стадион</option>
+                                    <option th:each="stadium : ${stadiums}" th:value="${stadium.id}" th:text="${stadium.name}"></option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">Дата и время *</label>
+                                <input type="datetime-local" id="matchDateTime" class="form-control" min="" required>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <div id="createMatchMessage" class="me-auto"></div>
+                    <button type="button" class="btn btn-secondary" onclick="closeCreateModal()">Отмена</button>
+                    <button type="button" class="btn btn-primary" onclick="createMatch()">Создать матч</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/admin-matches.js}"></script>
+</th:block>
+</body>
+</html>
