@@ -1,0 +1,60 @@
+/* track-order.css - страница отслеживания заказа */
+
+/* Карточка формы поиска */
+.track-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.track-card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+.track-card-header h5 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.track-card-body {
+    padding: 1.5rem;
+}
+
+/* Карточка результата */
+.track-result-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.track-result-header {
+    background: #28a745;
+    color: white;
+    padding: 1rem 1.5rem;
+}
+
+.track-result-header h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+.track-result-body {
+    padding: 1.5rem;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .track-card-body {
+        padding: 1rem;
+    }
+
+    .track-result-body {
+        padding: 1rem;
+    }
+}

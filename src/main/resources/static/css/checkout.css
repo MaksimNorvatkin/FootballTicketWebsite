@@ -1,0 +1,81 @@
+/* checkout.css - страница оформления заказа */
+
+/* Карточка формы */
+.checkout-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+
+.checkout-card-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+.checkout-card-header h5 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.checkout-card-body {
+    padding: 1.5rem;
+}
+
+/* Карточка заказа */
+.order-summary-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    position: sticky;
+    top: 20px;
+}
+
+.order-summary-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+.order-summary-header h5 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.order-summary-body {
+    padding: 1.5rem;
+}
+
+.order-item {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+}
+
+.order-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .checkout-card-body {
+        padding: 1rem;
+    }
+
+    .order-summary-body {
+        padding: 1rem;
+    }
+
+    .order-summary-card {
+        position: relative;
+        top: 0;
+        margin-top: 1rem;
+    }
+}

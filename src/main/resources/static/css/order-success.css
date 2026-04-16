@@ -1,0 +1,91 @@
+/* order-success.css - страница успешного заказа */
+
+/* Карточка успеха */
+.success-card {
+    text-align: center;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.success-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.success-title {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #28a745;
+    margin-bottom: 0.5rem;
+}
+
+.success-message {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+/* Карточка деталей заказа */
+.order-details-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.order-details-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+.order-details-header h5 {
+    margin: 0;
+    color: #333;
+    font-weight: 600;
+}
+
+.order-details-body {
+    padding: 1.5rem;
+}
+
+.order-details-body p {
+    margin-bottom: 0.75rem;
+}
+
+.order-details-body strong {
+    color: #333;
+}
+
+/* Кнопки действий */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.action-buttons .btn {
+    padding: 0.5rem 1.5rem;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+    .success-title {
+        font-size: 1.4rem;
+    }
+
+    .order-details-body {
+        padding: 1rem;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .action-buttons .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}

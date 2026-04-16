@@ -2,17 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
 <head>
     <title>Отследить заказ</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/track-order.css}">
+    </th:block>
 </head>
 <body>
 <div layout:fragment="content">
     <h2 class="mb-4">🔍 Отследить заказ</h2>
 
     <!-- Форма поиска заказа -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
+    <div class="track-card">
+        <div class="track-card-header">
             <h5 class="mb-0">Поиск заказа</h5>
         </div>
-        <div class="card-body">
+        <div class="track-card-body">
             <form method="post" action="/track-order" class="row g-3">
                 <div class="col-md-6">
                     <label class="form-label">Номер заказа *</label>
@@ -27,23 +30,17 @@
                     <small class="text-muted">Email, который указали при оформлении</small>
                 </div>
                 <div class="col-12">
-                    <button type="submit" class="btn btn-primary">Найти заказ</button>
+                    <button type="submit" class="btn btn-primary">🔍 Найти заказ</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Результаты поиска -->
-    <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
-        <span th:text="${error}"></span>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    </div>
-
-    <div th:if="${order != null}" class="card">
-        <div class="card-header bg-success text-white">
+    <div th:if="${order != null}" class="track-result-card mt-4">
+        <div class="track-result-header">
             <h5 class="mb-0">✅ Заказ найден</h5>
         </div>
-        <div class="card-body">
+        <div class="track-result-body">
             <div class="row mb-4">
                 <div class="col-md-6">
                     <p><strong>📋 Номер заказа:</strong> <span th:text="${order.orderNumber}"></span></p>
@@ -101,12 +98,6 @@
                 <strong>ℹ️ Информация:</strong> Билеты будут отправлены на указанный email в течение 24 часов.
             </div>
         </div>
-    </div>
-
-    <!-- Подсказка для тестирования -->
-    <div class="alert alert-secondary mt-4">
-        <h6>📝 Тестовые данные:</h6>
-        <p class="mb-0 small">После оформления заказа вы получите номер заказа. Используйте его и ваш email для отслеживания.</p>
     </div>
 </div>
 </body>

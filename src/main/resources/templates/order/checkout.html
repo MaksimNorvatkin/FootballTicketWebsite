@@ -1,19 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/main}">
 <head>
     <title>Оформление заказа</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/checkout.css}">
+    </th:block>
 </head>
 <body>
 <div layout:fragment="content">
     <h2 class="mb-4">📝 Оформление заказа</h2>
 
     <div class="row">
+        <!-- Форма оформления -->
         <div class="col-md-7">
-            <div class="card">
-                <div class="card-header bg-primary text-white">
+            <div class="checkout-card">
+                <div class="checkout-card-header">
                     <h5 class="mb-0">Контактная информация</h5>
                 </div>
-                <div class="card-body">
+                <div class="checkout-card-body">
                     <form action="/checkout/submit" method="post">
                         <div class="mb-3">
                             <label class="form-label">Ваше имя *</label>
@@ -39,28 +43,31 @@
             </div>
         </div>
 
+        <!-- Ваш заказ -->
         <div class="col-md-5">
-            <div class="card">
-                <div class="card-header bg-dark text-white">
+            <div class="order-summary-card">
+                <div class="order-summary-header">
                     <h5 class="mb-0">Ваш заказ</h5>
                 </div>
-                <div class="card-body">
-                    <div th:each="entry : ${cartItems}">
+                <div class="order-summary-body">
+                    <div th:each="entry : ${cartItems}" class="order-item">
                         <div class="d-flex justify-content-between mb-2">
-                                <span>
-                                    <strong th:text="${entry.value.ticket.match.homeTeam.name} + ' vs ' + ${entry.value.ticket.match.awayTeam.name}"></strong><br>
-                                    <small>Сектор <span th:text="${entry.value.ticket.sector.name}"></span>,
-                                           Ряд <span th:text="${entry.value.ticket.rowNumber}"></span>,
-                                           Место <span th:text="${entry.value.ticket.seatNumber}"></span>
-                                    </small>
-                                </span>
-                            <span>£<span th:text="${entry.value.subtotal}"></span></span>
+                            <div>
+                                <strong th:text="${entry.value.ticket.match.homeTeam.name} + ' vs ' + ${entry.value.ticket.match.awayTeam.name}"></strong>
+                                <br>
+                                <small class="text-muted">
+                                    Сектор <span th:text="${entry.value.ticket.sector.name}"></span>,
+                                    Ряд <span th:text="${entry.value.ticket.rowNumber}"></span>,
+                                    Место <span th:text="${entry.value.ticket.seatNumber}"></span>
+                                </small>
+                            </div>
+                            <span class="fw-bold">£<span th:text="${entry.value.subtotal}"></span></span>
                         </div>
                     </div>
                     <hr>
                     <div class="d-flex justify-content-between">
                         <strong>Итого:</strong>
-                        <strong class="text-success">£<span th:text="${totalAmount}"></span></strong>
+                        <strong class="text-success fs-5">£<span th:text="${totalAmount}"></span></strong>
                     </div>
                 </div>
             </div>
