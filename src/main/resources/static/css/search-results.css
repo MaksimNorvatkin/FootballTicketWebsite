@@ -1,0 +1,110 @@
+/* search-results.css - страница результатов поиска */
+
+/* Счётчик результатов */
+.results-count {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.results-count strong {
+    color: #dc3545;
+    font-size: 1.2rem;
+}
+
+/* Карточка матча */
+.search-match-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.search-match-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.search-match-card .match-date-box {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    text-align: center;
+    padding: 20px 15px;
+}
+
+.search-match-card .date-month {
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+}
+
+.search-match-card .date-day {
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1;
+    margin: 5px 0;
+}
+
+.search-match-card .date-year {
+    font-size: 12px;
+    opacity: 0.8;
+}
+
+.search-match-card .match-teams {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.search-match-card .match-detail-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 12px;
+}
+
+.search-match-card .match-detail-info span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.search-match-card .btn-buy {
+    background: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    width: fit-content;
+    transition: all 0.3s ease;
+}
+
+.search-match-card .btn-buy:hover {
+    background: #dc3545;
+    color: white;
+    text-decoration: none;
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 768px) {
+
+    .search-match-card .date-day {
+        font-size: 24px;
+    }
+
+    .search-match-card .match-teams {
+        font-size: 16px;
+    }
+}

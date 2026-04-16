@@ -8,32 +8,46 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <h2 class="mb-4">Все матчи Английской Премьер Лиги</h2>
+    <!-- Hero секция -->
+    <div class="matches-hero">
+        <h1>Все матчи Английской Премьер Лиги</h1>
+        <p>Выберите матч и купите билеты на лучшие футбольные события</p>
+    </div>
 
     <!-- Форма фильтрации -->
-    <div class="card mb-4">
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">Фильтр матчей</h5>
+    <div class="filter-card">
+        <div class="card-header">
+            <h5>🔍 Фильтр матчей</h5>
         </div>
         <div class="card-body">
             <form method="get" action="/matches" class="row g-3">
-                <div class="col-md-3">
-                    <label class="form-label">🏙️ Город</label>
-                    <input type="text" name="city" class="form-control"
-                           th:value="${selectedCity}"
-                           placeholder="London, Manchester, Liverpool...">
-                </div>
+<!--                <div class="col-md-3">-->
+<!--                    <label class="form-label">🏙️ Город</label>-->
+<!--                    <input type="text" name="city" class="form-control"-->
+<!--                           th:value="${selectedCity}"-->
+<!--                           placeholder="London, Manchester...">-->
+<!--                </div>-->
                 <div class="col-md-3">
                     <label class="form-label">⚽ Команда</label>
-                    <input type="text" name="team" class="form-control"
-                           th:value="${selectedTeam}"
-                           placeholder="Liverpool, Arsenal, Chelsea...">
+                    <select name="team" class="form-select">
+                        <option value="">Все команды</option>
+                        <option th:each="t : ${allTeams}"
+                                th:value="${t.name}"
+                                th:text="${t.name}"
+                                th:selected="${selectedTeam != null and selectedTeam eq t.name}">
+                        </option>
+                    </select>
                 </div>
                 <div class="col-md-3">
                     <label class="form-label">🏟️ Стадион</label>
-                    <input type="text" name="stadium" class="form-control"
-                           th:value="${selectedStadium}"
-                           placeholder="Anfield, Emirates, Old Trafford...">
+                    <select name="stadium" class="form-select">
+                        <option value="">Все стадионы</option>
+                        <option th:each="s : ${allStadiums}"
+                                th:value="${s.name}"
+                                th:text="${s.name}"
+                                th:selected="${selectedStadium != null and selectedStadium eq s.name}">
+                        </option>
+                    </select>
                 </div>
                 <div class="col-md-2">
                     <label class="form-label">📅 Дата от</label>
@@ -45,60 +59,67 @@
                     <input type="date" name="toDate" class="form-control"
                            th:value="${selectedToDate}">
                 </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-primary w-100">
+
+                <!-- Пустая колонка для отступа -->
+                <div class="col-md-8"></div>
+
+                <!-- Кнопки в правом нижнем углу -->
+                <div class="col-md-4 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-primary" onclick="applyFilters()">
                         🔍 Найти матчи
                     </button>
-                </div>
-                <div class="col-md-2 d-flex align-items-end">
-                    <a href="/matches" class="btn btn-secondary w-100">
+                    <button type="button" class="btn btn-outline-secondary" onclick="resetFilters()">
                         🗑️ Сбросить
-                    </a>
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <!-- Результаты фильтрации -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Найдено матчей: <span class="badge bg-primary" th:text="${matchesCount}">0</span></h4>
+    <div class="results-count">
+        Найдено матчей: <strong id="matchesCount" th:text="${matchesCount}">0</strong>
     </div>
 
     <!-- Список матчей -->
-    <div th:if="${matches != null and !matches.empty}">
-        <div class="row">
-            <div class="col-md-6 col-lg-4 mb-4" th:each="match : ${matches}">
-                <div class="card h-100 shadow-sm hover-shadow">
-                    <div class="card-body">
-                        <div class="text-center mb-3">
-                            <h4 class="card-title text-primary" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></h4>
-                            <hr>
+    <div id="matchesContainer">
+        <!-- Начальные матчи (рендерятся сервером) -->
+        <div th:if="${matches != null and !matches.empty}">
+            <div class="row" id="matchesList">
+                <div class="col-md-6 col-lg-4 mb-4" th:each="match : ${matches}">
+                    <div class="match-card">
+                        <div class="match-date-box">
+                            <div class="date-month" th:text="${#temporals.format(match.matchDateTime, 'MMM')}"></div>
+                            <div class="date-day" th:text="${#temporals.format(match.matchDateTime, 'dd')}"></div>
+                            <div class="date-year" th:text="${#temporals.format(match.matchDateTime, 'yyyy')}"></div>
                         </div>
-                        <p class="card-text">
-                            <strong>🏟️ Стадион:</strong> <span th:text="${match.stadium.name}"></span><br>
-                            <strong>🏙️ Город:</strong> <span th:text="${match.stadium.city}"></span><br>
-                            <strong>📅 Дата и время:</strong>
-                            <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span><br>
-                            <strong>⭐ Популярность:</strong>
-                            <span class="badge bg-warning text-dark" th:text="${match.popularityScore} + '%'"></span>
-                        </p>
-                        <div class="d-grid gap-2">
-                            <a th:href="'/match/' + ${match.id}" class="btn btn-success btn-lg">
-                                🎫 Выбрать билеты
-                            </a>
+                        <div class="p-3">
+                            <div class="match-teams" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></div>
+                            <div class="match-detail-info">
+                                <span>🏟️ <span th:text="${match.stadium.name}"></span></span>
+                                <span>🏙️ <span th:text="${match.stadium.city}"></span></span>
+                                <span>⏰ <span th:text="${#temporals.format(match.matchDateTime, 'HH:mm')}"></span></span>
+                            </div>
+                            <a th:href="'/match/' + ${match.id}" class="btn-buy">🎫 Выбрать билеты →</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Если матчей не найдено -->
-    <div th:unless="${matches != null and !matches.empty}" class="alert alert-info text-center">
-        <h4>😔 Матчи не найдены</h4>
-        <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
-        <a href="/matches" class="btn btn-primary">Показать все матчи</a>
+        <!-- Сообщение если нет матчей -->
+        <div th:unless="${matches != null and !matches.empty}" class="alert alert-info text-center" id="noMatchesMessage">
+            <h4>😔 Матчи не найдены</h4>
+            <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
+            <button class="btn btn-primary" onclick="resetFilters()">Показать все матчи</button>
+        </div>
+
+        <!-- Скрытое сообщение для AJAX (когда нет матчей) -->
+        <div class="alert alert-info text-center" id="noMatchesAjaxMessage" style="display: none;">
+            <h4>😔 Матчи не найдены</h4>
+            <p>Попробуйте изменить параметры поиска или сбросить фильтры.</p>
+            <button class="btn btn-primary" onclick="resetFilters()">Показать все матчи</button>
+        </div>
     </div>
-</div>
 </body>
 </html>

@@ -8,19 +8,27 @@
     <h2 class="mb-4">🔍 Результаты поиска:
         <span class="text-primary" th:text="'“' + ${searchQuery} + '”'"></span>
     </h2>
-
+    <!-- Результаты -->
     <div th:if="${matches != null and !matches.empty}">
-        <p class="lead">Найдено матчей: <strong th:text="${matchesCount}"></strong></p>
-        <div class="row">
-            <div class="col-md-6 mb-3" th:each="match : ${matches}">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></h5>
-                        <p class="card-text">
-                            🏟️ <span th:text="${match.stadium.name}"></span><br>
-                            📅 <span th:text="${#temporals.format(match.matchDateTime, 'dd.MM.yyyy HH:mm')}"></span>
-                        </p>
-                        <a th:href="'/match/' + ${match.id}" class="btn btn-primary">Выбрать билеты</a>
+        <div class="results-count">
+            Найдено матчей: <strong th:text="${matchesCount}">0</strong>
+        </div>
+        <div class="row" id="matchesList">
+            <div class="col-md-6 col-lg-4 mb-4" th:each="match : ${matches}">
+                <div class="match-card">
+                    <div class="match-date-box">
+                        <div class="date-month" th:text="${#temporals.format(match.matchDateTime, 'MMM')}"></div>
+                        <div class="date-day" th:text="${#temporals.format(match.matchDateTime, 'dd')}"></div>
+                        <div class="date-year" th:text="${#temporals.format(match.matchDateTime, 'yyyy')}"></div>
+                    </div>
+                    <div class="p-3">
+                        <div class="match-teams" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></div>
+                        <div class="match-detail-info">
+                            <span>🏟️ <span th:text="${match.stadium.name}"></span></span>
+                            <span>🏙️ <span th:text="${match.stadium.city}"></span></span>
+                            <span>⏰ <span th:text="${#temporals.format(match.matchDateTime, 'HH:mm')}"></span></span>
+                        </div>
+                        <a th:href="'/match/' + ${match.id}" class="btn-buy">🎫 Выбрать билеты →</a>
                     </div>
                 </div>
             </div>
@@ -30,7 +38,7 @@
     <div th:unless="${matches != null and !matches.empty}" class="alert alert-info">
         <h4>😔 По вашему запросу ничего не найдено</h4>
         <p>Попробуйте поискать по названию команды, города или стадиона.</p>
-        <a href="/static" class="btn btn-primary">Вернуться на главную</a>
+        <a href="/" class="btn btn-primary">Вернуться на главную</a>
     </div>
 </div>
 </body>
