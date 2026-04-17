@@ -23,24 +23,116 @@ function adminChangeStatus(orderId, status) {
         .catch(error => console.error('Error:', error));
 }
 
+// function adminShowDetails(orderId) {
+//     fetch(`/admin/orders/${orderId}/details`)
+//         .then(response => response.json())
+//         .then(data => {
+//             let message = `Заказ #${data.orderNumber}\n`;
+//             message += `Email: ${data.customerEmail}\n`;
+//             message += `Сумма: £${data.totalAmount}\n`;
+//             message += `Статус: ${data.status}\n`;
+//             message += `Дата: ${data.orderDate}\n\n`;
+//             message += `🎫 Билеты:\n`;
+//
+//             data.tickets.forEach((ticket, index) => {
+//                 message += `${index + 1}. ${ticket.match} - ${ticket.sector}, Ряд ${ticket.row}, Место ${ticket.seat} - £${ticket.price}\n`;
+//             });
+//
+//             alert(message);
+//         })
+//         .catch(error => console.error('Error:', error));
+// }
+
 function adminShowDetails(orderId) {
     fetch(`/admin/orders/${orderId}/details`)
         .then(response => response.json())
         .then(data => {
-            let message = `Заказ #${data.orderNumber}\n`;
-            message += `Email: ${data.customerEmail}\n`;
-            message += `Сумма: £${data.totalAmount}\n`;
-            message += `Статус: ${data.status}\n`;
-            message += `Дата: ${data.orderDate}\n\n`;
-            message += `🎫 Билеты:\n`;
+            let html = `
+                <div class="order-details">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>📋 Номер заказа:</strong> ${data.orderNumber}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>📧 Email:</strong> ${data.customerEmail}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>💰 Сумма:</strong> £${data.totalAmount}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>📅 Дата:</strong> ${data.orderDate}
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <strong>📌 Статус:</strong> 
+                            <span class="badge ${getAdminStatusBadgeClass(data.status)}">${getAdminStatusText(data.status)}</span>
+                        </div>
+                    </div>
+                    <hr>
+                    <h6>🎫 Билеты:</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Матч</th>
+                                    <th>Сектор</th>
+                                    <th>Ряд</th>
+                                    <th>Место</th>
+                                    <th>Цена</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+            `;
 
-            data.tickets.forEach((ticket, index) => {
-                message += `${index + 1}. ${ticket.match} - ${ticket.sector}, Ряд ${ticket.row}, Место ${ticket.seat} - £${ticket.price}\n`;
+            data.tickets.forEach(ticket => {
+                html += `
+                    <tr>
+                        <td>${ticket.match}</td>
+                        <td>${ticket.sector}</td>
+                        <td>${ticket.row}</td>
+                        <td>${ticket.seat}</td>
+                        <td>£${ticket.price}</td>
+                    </tr>
+                `;
             });
 
-            alert(message);
+            html += `
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('adminOrderDetailsBody').innerHTML = html;
+
+            // Показываем модальное окно
+            const modal = new bootstrap.Modal(document.getElementById('adminOrderDetailsModal'));
+            modal.show();
         })
         .catch(error => console.error('Error:', error));
+}
+
+function getAdminStatusBadgeClass(status) {
+    switch(status) {
+        case 'PAID': return 'bg-success';
+        case 'PROCESSING': return 'bg-warning text-dark';
+        case 'SHIPPED': return 'bg-info';
+        case 'CANCELLED': return 'bg-danger';
+        default: return 'bg-secondary';
+    }
+}
+
+function getAdminStatusText(status) {
+    switch(status) {
+        case 'PAID': return '✅ Оплачен';
+        case 'PROCESSING': return '🔄 В работе';
+        case 'SHIPPED': return '📦 Отправлен';
+        case 'CANCELLED': return '❌ Отменён';
+        default: return status;
+    }
 }
 
 function updateAdminStats() {

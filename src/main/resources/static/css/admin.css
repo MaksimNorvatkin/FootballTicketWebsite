@@ -267,3 +267,17 @@
     border-radius: 16px;
     overflow: hidden;
 }
+
+/* Стили для модального окна */
+.order-details {
+    font-size: 14px;
+}
+
+.order-details table {
+    font-size: 13px;
+}
+
+.order-details .badge {
+    padding: 5px 10px;
+    font-size: 12px;
+}
