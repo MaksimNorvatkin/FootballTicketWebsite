@@ -37,27 +37,6 @@ function updateStats() {
         .catch(error => console.error('Error:', error));
 }
 
-// function showDetails(orderId) {
-//     fetch(`/manager/orders/${orderId}/details`)
-//         .then(response => response.json())
-//         .then(data => {
-//             // Формируем сообщение с деталями заказа
-//             let message = `Заказ #${data.orderNumber}\n`;
-//             message += `Email: ${data.customerEmail}\n`;
-//             message += `Сумма: £${data.totalAmount}\n`;
-//             message += `Статус: ${data.status}\n`;
-//             message += `Дата: ${data.orderDate}\n\n`;
-//             message += `🎫 Билеты:\n`;
-//
-//             data.tickets.forEach((ticket, index) => {
-//                 message += `${index + 1}. ${ticket.match} - ${ticket.sector}, Ряд ${ticket.row}, Место ${ticket.seat} - £${ticket.price}\n`;
-//             });
-//
-//             alert(message);
-//         })
-//         .catch(error => console.error('Error:', error));
-// }
-
 function showDetails(orderId) {
     fetch(`/manager/orders/${orderId}/details`)
         .then(response => response.json())
