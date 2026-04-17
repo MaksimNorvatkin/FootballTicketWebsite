@@ -57,7 +57,26 @@ public class AdminController {
             user.setRole(role);
             userRepository.save(user);
             response.put("success", true);
-            response.put("message", "Роль успешно изменена");
+            response.put("message", "Роль пользователя " + user.getEmail() + " изменена на " + role);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+        }
+        return response;
+    }
+    /**
+     * удаление юзера (AJAX)
+     */
+    @DeleteMapping("/users/{id}")
+    @ResponseBody
+    public Map<String, Object> deleteUser(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            User user = userRepository.findById(id).orElseThrow();
+            String email = user.getEmail();
+            userRepository.deleteById(id);
+            response.put("success", true);
+            response.put("message", "Пользователь " + email + " удалён");
         } catch (Exception e) {
             response.put("success", false);
             response.put("message", e.getMessage());

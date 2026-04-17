@@ -13,7 +13,7 @@
         <a href="/admin" class="btn btn-outline-secondary">← Назад в админку</a>
     </div>
 
-    <div class="admin-table">
+    <div class="users-table">
         <table class="table">
             <thead>
             <tr>
@@ -29,19 +29,29 @@
                 <td th:text="${user.id}">1</td>
                 <td th:text="${user.email}">admin@test.com</td>
                 <td th:text="${user.fullName}">Admin</td>
-                <td th:text="${user.role}">ADMIN</td>
                 <td>
-                    <select th:value="${user.role}" class="form-select form-select-sm d-inline-block w-auto">
-                        <option value="USER">USER</option>
-                        <option value="MANAGER">MANAGER</option>
-                        <option value="ADMIN">ADMIN</option>
+                    <select class="form-select form-select-sm" th:onchange="'changeRole(' + ${user.id} + ', this.value)'">
+                        <option value="USER" th:selected="${user.role.name() == 'USER'}">👤 USER</option>
+                        <option value="MANAGER" th:selected="${user.role.name() == 'MANAGER'}">📋 MANAGER</option>
+                        <option value="ADMIN" th:selected="${user.role.name() == 'ADMIN'}">👑 ADMIN</option>
                     </select>
-                    <button class="btn btn-sm btn-primary mt-1">Сохранить</button>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-danger"
+                            th:onclick="'deleteUser(' + ${user.id} + ')'"
+                            th:unless="${user.email == 'admin@footballticket.ru'}">
+                        🗑️ Удалить
+                    </button>
+                    <span th:if="${user.email == 'admin@footballticket.ru'}" class="text-muted">Главный админ</span>
                 </td>
             </tr>
             </tbody>
         </table>
     </div>
 </div>
+
+<th:block layout:fragment="scripts">
+    <script th:src="@{/js/admin-users.js}"></script>
+</th:block>
 </body>
 </html>

@@ -4,7 +4,7 @@ import ru.footballticket.entity.*;
 import ru.footballticket.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -20,7 +20,7 @@ public class DataInitializer implements CommandLineRunner {
     private final TicketRepository ticketRepository;
     private final TeamRepository teamRepository;
     private final StadiumRepository stadiumRepository;
-    //private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public void run(String... args) throws Exception {
@@ -50,17 +50,19 @@ public class DataInitializer implements CommandLineRunner {
         // Создаем пользователей
         User admin = new User();
         admin.setEmail("admin@footballticket.ru");
-        admin.setPassword("admin123");
+        admin.setPassword(passwordEncoder.encode("admin123"));
         admin.setRole(User.Role.ADMIN);
         admin.setFullName("System Administrator");
         userRepository.save(admin);
 
+
         User manager = new User();
         manager.setEmail("manager@footballticket.ru");
-        manager.setPassword("manager123");
+        manager.setPassword(passwordEncoder.encode("manager123"));  // ← ЗАШИФРОВАН
         manager.setRole(User.Role.MANAGER);
         manager.setFullName("Ticket Manager");
         userRepository.save(manager);
+
         // Создаем 6 секторов и билеты для каждого матча
         String[] sectors = {"North", "NorthEast", "East", "West", "South", "SouthWest"};
         Double[] multipliers = {1.0, 1.5, 0.8, 0.8, 1.0, 1.5};
