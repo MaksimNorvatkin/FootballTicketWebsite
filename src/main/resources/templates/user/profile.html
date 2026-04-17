@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
+<head>
+    <title>Личный кабинет</title>
+    <th:block layout:fragment="styles">
+        <link rel="stylesheet" th:href="@{/css/profile.css}">
+    </th:block>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="profile-icon">👤</div>
+                    <h3 th:text="${user.fullName}">Имя пользователя</h3>
+                    <p class="text-muted" th:text="${user.email}">email@test.com</p>
+                </div>
+                <div class="profile-body">
+                    <div class="info-row">
+                        <span class="info-label">Роль:</span>
+                        <span class="info-value" th:text="${user.role}">USER</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Заказов:</span>
+                        <span class="info-value" th:text="${orders.size()}">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="orders-card">
+                <div class="orders-header">
+                    <h4>📦 Мои заказы</h4>
+                </div>
+                <div class="orders-body">
+                    <div th:if="${orders != null and !orders.empty}">
+                        <div class="order-item" th:each="order : ${orders}">
+                            <div class="order-header">
+                                <span class="order-number">Заказ #<span th:text="${order.orderNumber}"></span></span>
+                                <span class="order-status">
+                                    <span th:if="${order.status.name() == 'PAID'}" class="status-paid">✅ Оплачен</span>
+                                    <span th:if="${order.status.name() == 'PROCESSING'}" class="status-processing">🔄 В работе</span>
+                                    <span th:if="${order.status.name() == 'SHIPPED'}" class="status-shipped">📦 Отправлен</span>
+                                    <span th:if="${order.status.name() == 'CANCELLED'}" class="status-cancelled">❌ Отменён</span>
+                                </span>
+                            </div>
+                            <div class="order-body">
+                                <div class="order-date">📅 <span th:text="${#temporals.format(order.orderDate, 'dd.MM.yyyy HH:mm')}"></span></div>
+                                <div class="order-total">💰 Сумма: £<span th:text="${order.totalAmount}"></span></div>
+                                <div class="order-tickets">
+                                    <strong>🎫 Билеты:</strong>
+                                    <ul>
+                                        <li th:each="ticket : ${ticketsByOrder.get(order.id)}">
+                                            <span th:text="${ticket.match.homeTeam.name} + ' vs ' + ${ticket.match.awayTeam.name}"></span> -
+                                            Сектор <span th:text="${ticket.sector.name}"></span>,
+                                            Ряд <span th:text="${ticket.rowNumber}"></span>,
+                                            Место <span th:text="${ticket.seatNumber}"></span> -
+                                            £<span th:text="${ticket.price}"></span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div th:unless="${orders != null and !orders.empty}" class="alert alert-info text-center">
+                        <h5>😔 У вас пока нет заказов</h5>
+                        <p>Перейдите на <a href="/matches">страницу матчей</a>, чтобы купить билеты.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

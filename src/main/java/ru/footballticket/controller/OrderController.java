@@ -1,9 +1,12 @@
 package ru.footballticket.controller;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import ru.footballticket.entity.Match;
 import ru.footballticket.entity.Order;
 import ru.footballticket.entity.Ticket;
 import ru.footballticket.entity.Ticket.TicketStatus;
+import ru.footballticket.entity.User;
 import ru.footballticket.repository.MatchRepository;
 import ru.footballticket.repository.OrderRepository;
 import ru.footballticket.repository.TicketRepository;
@@ -40,48 +43,107 @@ public class OrderController {
         return "order/checkout";
     }
 
-    @PostMapping("/checkout/submit")
-    public String submitOrder(@RequestParam String customerEmail,
-                              @RequestParam String customerName,
-                              Model model) {
-        if (cartService.getItemCount() == 0) {
-            return "redirect:/cart";
-        }
-
-        // Создаем заказ
-        Order order = new Order();
-        order.setOrderNumber("ORD-" + System.currentTimeMillis());
-        order.setOrderDate(LocalDateTime.now());
-        order.setTotalAmount(cartService.getTotalAmount());
-        order.setStatus(Order.OrderStatus.PAID);
-        order.setCustomerEmail(customerEmail);
-
-        order = orderRepository.save(order);
-
-        // Обновляем билеты и связываем с заказом
-        List<Ticket> ticketsToSave = new ArrayList<>();
-        for (CartService.CartItem item : cartService.getItems().values()) {
-            Ticket ticket = item.getTicket();
-            ticket.setStatus(TicketStatus.PAID);
-            ticket.setOrder(order);
-            ticketsToSave.add(ticket);
-        }
-        ticketRepository.saveAll(ticketsToSave);
-    // После сохранения заказа, обновляем счётчик проданных билетов
-        for (Ticket ticket : ticketsToSave) {
-            Match match = ticket.getMatch();
-            match.setTicketsSold(match.getTicketsSold() + 1);
-            matchRepository.save(match);
-        }
-        // Очищаем корзину
-        cartService.clear();
-
-        model.addAttribute("orderNumber", order.getOrderNumber());
-        model.addAttribute("totalAmount", order.getTotalAmount());
-        model.addAttribute("customerEmail", customerEmail);
-
-        return "order/order-success";
+//    @PostMapping("/checkout/submit")
+//    public String submitOrder(@RequestParam String customerEmail,
+//                              @RequestParam String customerName,
+//                              Model model) {
+//        if (cartService.getItemCount() == 0) {
+//            return "redirect:/cart";
+//        }
+//
+//        // Создаем заказ
+//        Order order = new Order();
+//        order.setOrderNumber("ORD-" + System.currentTimeMillis());
+//        order.setOrderDate(LocalDateTime.now());
+//        order.setTotalAmount(cartService.getTotalAmount());
+//        order.setStatus(Order.OrderStatus.PAID);
+//        order.setCustomerEmail(customerEmail);
+//
+//        order = orderRepository.save(order);
+//
+//        // Обновляем билеты и связываем с заказом
+//        List<Ticket> ticketsToSave = new ArrayList<>();
+//        for (CartService.CartItem item : cartService.getItems().values()) {
+//            Ticket ticket = item.getTicket();
+//            ticket.setStatus(TicketStatus.PAID);
+//            ticket.setOrder(order);
+//            ticketsToSave.add(ticket);
+//        }
+//        ticketRepository.saveAll(ticketsToSave);
+//    // После сохранения заказа, обновляем счётчик проданных билетов
+//        for (Ticket ticket : ticketsToSave) {
+//            Match match = ticket.getMatch();
+//            match.setTicketsSold(match.getTicketsSold() + 1);
+//            matchRepository.save(match);
+//        }
+//        // Очищаем корзину
+//        cartService.clear();
+//
+//        model.addAttribute("orderNumber", order.getOrderNumber());
+//        model.addAttribute("totalAmount", order.getTotalAmount());
+//        model.addAttribute("customerEmail", customerEmail);
+//
+//        return "order/order-success";
+//    }
+@PostMapping("/checkout/submit")
+public String submitOrder(@RequestParam(required = false) String customerEmail,
+                          @RequestParam String customerName,
+                          @AuthenticationPrincipal UserDetails userDetails,
+                          Model model) {
+    if (cartService.getItemCount() == 0) {
+        return "redirect:/cart";
     }
+
+    // Определяем email: если пользователь авторизован - берём из авторизации, иначе из формы
+    String email;
+    if (userDetails != null) {
+        email = userDetails.getUsername();
+    } else {
+        email = customerEmail;
+    }
+
+    // Создаем заказ
+    Order order = new Order();
+    order.setOrderNumber("ORD-" + System.currentTimeMillis());
+    order.setOrderDate(LocalDateTime.now());
+    order.setTotalAmount(cartService.getTotalAmount());
+    order.setStatus(Order.OrderStatus.PAID);
+    order.setCustomerEmail(email);
+
+    // Если пользователь авторизован, связываем заказ с пользователем
+    if (userDetails != null) {
+        User user = userRepository.findByEmail(email).orElse(null);
+        order.setUser(user);
+    }
+
+    order = orderRepository.save(order);
+
+    // Обновляем билеты и связываем с заказом
+    List<Ticket> ticketsToSave = new ArrayList<>();
+    for (CartService.CartItem item : cartService.getItems().values()) {
+        Ticket ticket = item.getTicket();
+        ticket.setStatus(TicketStatus.PAID);
+        ticket.setOrder(order);
+        ticketsToSave.add(ticket);
+    }
+    ticketRepository.saveAll(ticketsToSave);
+
+    // После сохранения заказа, обновляем счётчик проданных билетов
+    for (Ticket ticket : ticketsToSave) {
+        Match match = ticket.getMatch();
+        match.setTicketsSold(match.getTicketsSold() + 1);
+        matchRepository.save(match);
+    }
+
+    // Очищаем корзину
+    cartService.clear();
+
+    model.addAttribute("orderNumber", order.getOrderNumber());
+    model.addAttribute("totalAmount", order.getTotalAmount());
+    model.addAttribute("customerEmail", email);
+
+    return "order/order-success";
+}
 
     @GetMapping("/track-order")
     public String trackOrderForm() {

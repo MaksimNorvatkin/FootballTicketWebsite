@@ -1,0 +1,142 @@
+/* profile.css */
+
+.profile-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.profile-header {
+    background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+    color: white;
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.profile-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+}
+
+.profile-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.profile-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.8;
+}
+
+.profile-body {
+    padding: 1.5rem;
+}
+
+.info-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.info-label {
+    color: #666;
+}
+
+.info-value {
+    font-weight: 600;
+    color: #333;
+}
+
+.orders-card {
+    background: white;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.orders-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 1rem 1.5rem;
+}
+
+.orders-header h4 {
+    margin: 0;
+    color: #333;
+}
+
+.orders-body {
+    padding: 1.5rem;
+}
+
+.order-item {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.order-number {
+    font-weight: 600;
+    color: #333;
+}
+
+.order-status {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.status-paid {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-processing {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-shipped {
+    background: #cce5ff;
+    color: #004085;
+}
+
+.status-cancelled {
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.order-body {
+    padding: 1rem;
+}
+
+.order-date, .order-total {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.order-tickets ul {
+    margin: 0.5rem 0 0 1.5rem;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .order-header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}

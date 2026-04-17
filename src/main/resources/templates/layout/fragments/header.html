@@ -50,7 +50,7 @@
 
                 <!-- Для авторизованных пользователей -->
                 <div sec:authorize="isAuthenticated()">
-                    <span class="text-white me-2">👋 <span sec:authentication="name"></span></span>
+                    <a href="/profile" class="nav-link-custom text-decoration-none">👤 Профиль</a>
                     <a href="/logout" class="nav-link-custom text-decoration-none">🚪 Выход</a>
                 </div>
             </div>

@@ -1,7 +1,28 @@
 /* footer.css */
+
+/* Основной контейнер страницы */
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Контент должен занимать всё свободное пространство */
+main {
+    flex: 1;
+}
+
+/* Футер */
 .footer-custom {
     background-color: #dc3545 !important;
-    margin-top: 50px !important;
+    margin-top: auto;
 }
 
 .footer-custom a {
