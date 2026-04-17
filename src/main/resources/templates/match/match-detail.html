@@ -27,9 +27,12 @@
                 <div class="match-info">
                     <h2 class="match-title" th:text="${match.homeTeam.name} + ' vs ' + ${match.awayTeam.name}"></h2>
                     <div class="match-details">
-                        <p><span class="info-icon">🏟️</span> <strong>Стадион:</strong> <span th:text="${match.stadium.name}"></span></p>
-                        <p><span class="info-icon">🏙️</span> <strong>Город:</strong> <span th:text="${match.stadium.city}"></span></p>
-                        <p><span class="info-icon">📅</span> <strong>Дата:</strong> <span th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span></p>
+                        <p><span class="info-icon">🏟️</span> <strong>Стадион:</strong> <span
+                                th:text="${match.stadium.name}"></span></p>
+                        <p><span class="info-icon">🏙️</span> <strong>Город:</strong> <span
+                                th:text="${match.stadium.city}"></span></p>
+                        <p><span class="info-icon">📅</span> <strong>Дата:</strong> <span
+                                th:text="${#temporals.format(match.matchDateTime, 'dd MMMM yyyy, HH:mm')}"></span></p>
                     </div>
                 </div>
             </div>
@@ -62,13 +65,16 @@
                                     <div class="d-flex justify-content-between align-items-center">
                                         <div>
                                             <h6 class="mb-1">Сектор: <span th:text="${ticket.sector.name}"></span></h6>
-                                            <p class="mb-0 small">Ряд: <span th:text="${ticket.rowNumber}"></span>, Место: <span th:text="${ticket.seatNumber}"></span></p>
+                                            <p class="mb-0 small">Ряд: <span th:text="${ticket.rowNumber}"></span>,
+                                                Место: <span th:text="${ticket.seatNumber}"></span></p>
                                         </div>
                                         <div class="text-end">
-                                            <span class="badge bg-success fs-6 price-badge">£<span th:text="${ticket.price}"></span></span>
+                                            <span class="badge bg-success fs-6 price-badge">£<span
+                                                    th:text="${ticket.price}"></span></span>
                                             <button class="btn btn-sm btn-primary"
                                                     th:data-ticket-id="${ticket.id}"
-                                                    onclick="addToCart(this)">В корзину</button>
+                                                    onclick="addToCart(this)">В корзину
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -87,7 +93,6 @@
                 </button>
             </div>
         </div>
-
         <!-- Схема стадиона (с sticky) -->
         <div class="col-md-5 mb-4">
             <div class="sticky-stadium">
@@ -147,8 +152,8 @@
             </div>
         </div>
 
-<th:block layout:fragment="scripts">
-    <script th:src="@{/js/match-detail.js}"></script>
-</th:block>
+        <th:block layout:fragment="scripts">
+            <script th:src="@{/js/match-detail.js}"></script>
+        </th:block>
 </body>
 </html>

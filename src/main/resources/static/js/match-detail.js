@@ -4,13 +4,6 @@ let currentSectorId = null;
 let totalTickets = parseInt(document.getElementById('tickets-count')?.innerText || 0);
 const pageSize = 10;
 
-// Проверка, находится ли билет в корзине
-function isTicketInCart(ticketId) {
-    return fetch(`/cart/check/${ticketId}`)
-        .then(response => response.json())
-        .then(data => data.inCart)
-        .catch(() => false);
-}
 // Фильтр по сектору
 window.filterBySector = function(element) {
     const sectorId = element.getAttribute('data-sector-id');
@@ -26,6 +19,132 @@ window.filterBySector = function(element) {
 
     loadTickets(matchId, sectorId, 0, true);
 };
+
+// Загрузка билетов
+function loadTickets(matchId, sectorId, page, reset = false) {
+    let url = `/match/${matchId}/tickets?page=${page}&size=${pageSize}`;
+    if (sectorId) {
+        url += `&sectorId=${sectorId}`;
+    }
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data received:', data);
+            console.log('tickets count in data:', data.tickets.length);
+            if (reset) {
+                renderTickets(data.tickets);
+                currentPage = 0;
+                totalTickets = data.totalCount;
+            } else {
+                appendTickets(data.tickets);
+                currentPage = page;
+            }
+
+            updatePriceRange(data.minPrice, data.maxPrice);
+            const ticketsCountEl = document.getElementById('tickets-count');
+            if (ticketsCountEl) ticketsCountEl.textContent = data.totalCount;
+
+            const currentShown = document.querySelectorAll('#tickets-list .ticket-item').length;
+            const loadMoreContainer = document.getElementById('load-more-container');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+
+            if (loadMoreContainer) {
+                if (data.hasMore && currentShown < data.totalCount) {
+                    loadMoreContainer.style.display = 'block';
+                    if (loadMoreBtn) {
+                        loadMoreBtn.textContent = `Показать еще билеты (${currentShown}/${data.totalCount}) ↓`;
+                    }
+                } else {
+                    loadMoreContainer.style.display = 'none';
+                }
+            }
+
+            updateAllCartButtons();
+        })
+        .catch(error => console.error('Error loading tickets:', error));
+}
+
+// Загрузка следующих билетов
+window.loadMoreTickets = function() {
+    const matchId = window.location.pathname.split('/').pop();
+    const nextPage = currentPage + 1;
+    loadTickets(matchId, currentSectorId, nextPage, false);
+};
+
+// Отрисовка билетов
+function renderTickets(tickets) {
+    console.log('renderTickets called, tickets count:', tickets.length);
+
+    // Получаем элементы
+    let ticketsList = document.getElementById('tickets-list');
+    let ticketsContainer = document.getElementById('tickets-container');
+    let noTicketsMessage = document.getElementById('no-tickets-message');
+
+    console.log('ticketsList:', ticketsList);
+    console.log('ticketsContainer:', ticketsContainer);
+
+    // Если контейнера нет - выходим
+    if (!ticketsContainer) {
+        console.error('tickets-container not found!');
+        return;
+    }
+
+    // Если списка нет - создаём
+    if (!ticketsList) {
+        console.log('Creating tickets-list dynamically');
+        ticketsContainer.innerHTML = '<div id="tickets-list" class="tickets-list"></div>';
+        ticketsList = document.getElementById('tickets-list');
+    }
+
+    // Если после создания всё равно нет - выходим
+    if (!ticketsList) {
+        console.error('tickets-list not found even after creation!');
+        return;
+    }
+
+    // Очищаем список
+    ticketsList.innerHTML = '';
+
+    // Если билетов нет
+    if (tickets.length === 0) {
+        ticketsList.style.display = 'none';
+        if (noTicketsMessage) {
+            noTicketsMessage.style.display = 'block';
+        }
+        return;
+    }
+
+    // Если билеты есть
+    ticketsList.style.display = 'block';
+    if (noTicketsMessage) {
+        noTicketsMessage.style.display = 'none';
+    }
+
+    // Добавляем билеты
+    tickets.forEach(ticket => {
+        const ticketHtml = `
+            <div class="ticket-item" data-ticket-id="${ticket.id}" data-ticket-price="${ticket.price}">
+                <div class="card ticket-card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">Сектор: ${ticket.sectorName}</h6>
+                                <p class="mb-0 small">Ряд: ${ticket.rowNumber}, Место: ${ticket.seatNumber}</p>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-success fs-6 price-badge">£${ticket.price}</span>
+                                <button class="btn btn-sm btn-primary" onclick="addToCart(this)">В корзину</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        ticketsList.insertAdjacentHTML('beforeend', ticketHtml);
+    });
+}
+
 // Добавление билетов (для пагинации)
 function appendTickets(tickets) {
     const ticketsList = document.getElementById('tickets-list');
@@ -54,122 +173,6 @@ function appendTickets(tickets) {
         ticketsList.insertAdjacentHTML('beforeend', ticketHtml);
     });
 }
-// Загрузка билетов
-function loadTickets(matchId, sectorId, page, reset = false) {
-    let url = `/match/${matchId}/tickets?page=${page}&size=${pageSize}`;
-    if (sectorId) {
-        url += `&sectorId=${sectorId}`;
-    }
-
-    fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            if (reset) {
-                renderTickets(data.tickets);
-                currentPage = 0;
-                totalTickets = data.totalCount;
-            } else {
-                appendTickets(data.tickets);
-                currentPage = page;
-            }
-
-            updatePriceRange(data.minPrice, data.maxPrice);
-            document.getElementById('tickets-count').textContent = data.totalCount;
-
-            const currentShown = document.querySelectorAll('#tickets-list .ticket-item').length;
-            const loadMoreBtn = document.getElementById('load-more-btn');
-            const loadMoreContainer = document.getElementById('load-more-container');
-
-            if (loadMoreContainer) {
-                if (data.hasMore && currentShown < data.totalCount) {
-                    loadMoreContainer.style.display = 'block';
-                    if (loadMoreBtn) {
-                        loadMoreBtn.textContent = `Показать еще билеты (${currentShown}/${data.totalCount}) ↓`;
-                    }
-                } else {
-                    loadMoreContainer.style.display = 'none';
-                }
-            }
-
-            updateAllCartButtons();
-        })
-        .catch(error => console.error('Error loading tickets:', error));
-}
-
-// Загрузка следующих билетов
-window.loadMoreTickets = function() {
-    const matchId = window.location.pathname.split('/').pop();
-    const nextPage = currentPage + 1;
-    loadTickets(matchId, currentSectorId, nextPage, false);
-};
-
-// Отрисовка билетов
-function renderTickets(tickets) {
-    const ticketsList = document.getElementById('tickets-list');
-    const ticketsContainer = document.getElementById('tickets-container');
-
-    if (!ticketsList) {
-        console.error('tickets-list not found');
-        return;
-    }
-
-    // Очищаем список
-    ticketsList.innerHTML = '';
-
-    // Находим или создаём сообщение об отсутствии билетов
-    let noTicketsAlert = ticketsContainer ? ticketsContainer.querySelector('.alert-warning-custom') : null;
-
-    if (tickets.length === 0) {
-        // Скрываем список
-        ticketsList.style.display = 'none';
-
-        // Показываем сообщение
-        if (!noTicketsAlert) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = 'alert alert-warning-custom';
-            alertDiv.innerHTML = '😔 Нет доступных билетов в выбранном секторе';
-            if (ticketsContainer) {
-                ticketsContainer.appendChild(alertDiv);
-            }
-        } else {
-            noTicketsAlert.style.display = 'block';
-        }
-        return;
-    }
-
-    // Показываем список
-    ticketsList.style.display = 'block';
-
-    // Удаляем сообщение если есть
-    if (noTicketsAlert) {
-        noTicketsAlert.remove();
-    }
-
-    // Добавляем билеты
-    tickets.forEach(ticket => {
-        const ticketHtml = `
-            <div class="ticket-item" data-ticket-id="${ticket.id}" data-ticket-price="${ticket.price}">
-                <div class="card ticket-card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <h6 class="mb-1">Сектор: ${ticket.sectorName}</h6>
-                                <p class="mb-0 small">Ряд: ${ticket.rowNumber}, Место: ${ticket.seatNumber}</p>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-success fs-6 price-badge">£${ticket.price}</span>
-                                <button class="btn btn-sm btn-primary" onclick="addToCart(this)">В корзину</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-        ticketsList.insertAdjacentHTML('beforeend', ticketHtml);
-    });
-
-    updateAllCartButtons();
-}
 
 // Обновление состояния всех кнопок корзины
 function updateAllCartButtons() {
@@ -177,7 +180,10 @@ function updateAllCartButtons() {
 
     buttons.forEach(button => {
         const ticketItem = button.closest('.ticket-item');
+        if (!ticketItem) return;
+
         const ticketId = ticketItem.getAttribute('data-ticket-id');
+        if (!ticketId) return;
 
         fetch(`/cart/check/${ticketId}`)
             .then(response => response.json())
@@ -186,13 +192,11 @@ function updateAllCartButtons() {
                     button.textContent = '🗑️ Удалить';
                     button.classList.remove('btn-primary');
                     button.classList.add('btn-danger');
-                    button.setAttribute('data-ticket-id', ticketId);
                     button.setAttribute('onclick', 'removeFromCart(this)');
                 } else {
                     button.textContent = 'В корзину';
                     button.classList.remove('btn-danger');
                     button.classList.add('btn-primary');
-                    button.setAttribute('data-ticket-id', ticketId);
                     button.setAttribute('onclick', 'addToCart(this)');
                 }
             })
@@ -228,18 +232,15 @@ function highlightActiveSector() {
     }
 }
 
-// Сброс фильтра (без перезагрузки страницы)
+// Сброс фильтра
 window.resetFilter = function() {
-    // Убираем подсветку активного сектора
     document.querySelectorAll('.simple-sector').forEach(sector => {
         sector.classList.remove('active');
     });
 
-    // Сбрасываем текущий сектор
     currentSectorId = null;
     currentPage = 0;
 
-    // Загружаем все билеты (без фильтра по сектору)
     const matchId = window.location.pathname.split('/').pop();
     loadTickets(matchId, null, 0, true);
 };
