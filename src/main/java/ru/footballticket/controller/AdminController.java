@@ -32,7 +32,7 @@ public class AdminController {
         model.addAttribute("totalUsers", userRepository.count());
         model.addAttribute("totalMatches", matchRepository.count());
         model.addAttribute("totalTickets", ticketRepository.count());
-        model.addAttribute("totalOrders", 0); // TODO: добавить OrderRepository
+        model.addAttribute("totalOrders", orderRepository.count());
         return "admin/dashboard";
     }
 

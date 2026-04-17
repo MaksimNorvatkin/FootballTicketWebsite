@@ -42,13 +42,17 @@
                     <span id="cartCount" class="cart-count" style="display: none;">0</span>
                 </a>
 
-                <!-- Кнопки входа/выхода -->
-                <li class="nav-item" sec:authorize="isAnonymous()" style="list-style: none;">
-                    <a class="nav-link-custom text-decoration-none" href="/login">🔐 Вход</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()" style="list-style: none;">
-                    <a class="nav-link-custom text-decoration-none" href="/logout">🚪 Выход</a>
-                </li>
+                <!-- Для неавторизованных пользователей -->
+                <div sec:authorize="isAnonymous()">
+                    <a href="/login" class="nav-link-custom text-decoration-none">🔐 Вход</a>
+                    <a href="/register" class="nav-link-custom text-decoration-none">📝 Регистрация</a>
+                </div>
+
+                <!-- Для авторизованных пользователей -->
+                <div sec:authorize="isAuthenticated()">
+                    <span class="text-white me-2">👋 <span sec:authentication="name"></span></span>
+                    <a href="/logout" class="nav-link-custom text-decoration-none">🚪 Выход</a>
+                </div>
             </div>
         </div>
     </div>
