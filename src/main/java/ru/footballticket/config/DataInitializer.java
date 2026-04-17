@@ -24,6 +24,13 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        // Проверяем, есть ли уже пользователи (или стадионы)
+        if (userRepository.count() > 0 || stadiumRepository.count() > 0) {
+            System.out.println("✅ Данные уже существуют, пропускаем инициализацию");
+            return;
+        }
+
         // 1. Создаём стадионы
         Stadium anfield = createStadium("Anfield Road", "Liverpool", 53394, "/images/stadiums/anfield.jpg");
         Stadium emirates = createStadium("Emirates Stadium", "London", 60704, "/images/stadiums/emirates.jpg");
