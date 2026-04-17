@@ -25,7 +25,7 @@ public class Order {
     private Double totalAmount;
 
     @Enumerated(EnumType.STRING)
-    private OrderStatus status = OrderStatus.NEW;
+    private OrderStatus status = OrderStatus.PAID;
 
     private String customerEmail; // для отслеживания без регистрации
 
@@ -37,7 +37,7 @@ public class Order {
     private List<Ticket> tickets;
 
     public enum OrderStatus {
-        NEW, PAID, CANCELLED
+        PAID, PROCESSING, SHIPPED, CANCELLED
     }
 
     @PrePersist

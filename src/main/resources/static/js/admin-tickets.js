@@ -34,7 +34,6 @@ function generateTickets(matchId, sectorId) {
             if (data.success) {
                 // Обновляем счётчик билетов на карточке
                 const countSpan = document.getElementById('count_' + sectorId);
-                console.log('Updating count for sector:', sectorId, 'Count span:', countSpan, 'New count:', data.count);
                 if (countSpan) {
                     countSpan.textContent = data.count;
                 } else {

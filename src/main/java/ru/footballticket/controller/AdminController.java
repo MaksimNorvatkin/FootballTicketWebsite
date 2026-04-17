@@ -22,6 +22,7 @@ public class AdminController {
     private final UserRepository userRepository;
     private final TicketRepository ticketRepository;
     private final StadiumSectorRepository sectorRepository;
+    private final OrderRepository orderRepository;
 
     /**
      * Главная страница админ-панели (дашборд)
@@ -337,5 +338,82 @@ public class AdminController {
             response.put("message", e.getMessage());
         }
         return response;
+    }
+    /**
+     * Страница управления заказами
+     */
+    @GetMapping("/orders")
+    public String manageOrders(Model model) {
+        List<Order> orders = orderRepository.findAllByOrderByOrderDateDesc();
+        model.addAttribute("orders", orders);
+        model.addAttribute("totalOrders", orders.size());
+        model.addAttribute("totalPaid", orderRepository.countByStatus(Order.OrderStatus.PAID));
+        model.addAttribute("totalProcessing", orderRepository.countByStatus(Order.OrderStatus.PROCESSING));
+        model.addAttribute("totalShipped", orderRepository.countByStatus(Order.OrderStatus.SHIPPED));
+        model.addAttribute("totalCancelled", orderRepository.countByStatus(Order.OrderStatus.CANCELLED));
+        return "admin/orders";
+    }
+
+    /**
+     * Изменить статус заказа (AJAX)
+     */
+    @PostMapping("/orders/{id}/status")
+    @ResponseBody
+    public Map<String, Object> updateOrderStatus(@PathVariable Long id, @RequestParam Order.OrderStatus status) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            Order order = orderRepository.findById(id).orElseThrow();
+            order.setStatus(status);
+            orderRepository.save(order);
+            response.put("success", true);
+            response.put("message", "Статус заказа #" + order.getOrderNumber() + " изменён на " + status);
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", e.getMessage());
+        }
+        return response;
+    }
+
+    /**
+     * Получить детали заказа (AJAX)
+     */
+    @GetMapping("/orders/{id}/details")
+    @ResponseBody
+    public Map<String, Object> getOrderDetails(@PathVariable Long id) {
+        Map<String, Object> response = new HashMap<>();
+
+        Order order = orderRepository.findById(id).orElseThrow();
+        List<Ticket> tickets = ticketRepository.findByOrderId(order.getId());
+
+        response.put("orderNumber", order.getOrderNumber());
+        response.put("customerEmail", order.getCustomerEmail());
+        response.put("totalAmount", order.getTotalAmount());
+        response.put("status", order.getStatus().toString());
+        response.put("orderDate", order.getOrderDate().toString());
+
+        List<Map<String, Object>> ticketList = new ArrayList<>();
+        for (Ticket ticket : tickets) {
+            Map<String, Object> ticketMap = new HashMap<>();
+            ticketMap.put("match", ticket.getMatch().getHomeTeam().getName() + " vs " + ticket.getMatch().getAwayTeam().getName());
+            ticketMap.put("sector", ticket.getSector().getName());
+            ticketMap.put("row", ticket.getRowNumber());
+            ticketMap.put("seat", ticket.getSeatNumber());
+            ticketMap.put("price", ticket.getPrice());
+            ticketList.add(ticketMap);
+        }
+        response.put("tickets", ticketList);
+
+        return response;
+    }
+    @GetMapping("/orders/stats")
+    @ResponseBody
+    public Map<String, Object> getOrdersStats() {
+        Map<String, Object> stats = new HashMap<>();
+        stats.put("totalOrders", orderRepository.count());
+        stats.put("totalPaid", orderRepository.countByStatus(Order.OrderStatus.PAID));
+        stats.put("totalProcessing", orderRepository.countByStatus(Order.OrderStatus.PROCESSING));
+        stats.put("totalShipped", orderRepository.countByStatus(Order.OrderStatus.SHIPPED));
+        stats.put("totalCancelled", orderRepository.countByStatus(Order.OrderStatus.CANCELLED));
+        return stats;
     }
 }

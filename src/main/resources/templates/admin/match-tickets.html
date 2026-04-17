@@ -47,11 +47,10 @@
                     </div>
 
                     <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="badge bg-info">Билетов: <span th:id="'count_' + ${sector.id}">0</span></span>
-                        </div>
-                        <button class="btn btn-success"
-                                th:onclick="'generateTickets(' + ${match.id} + ', ' + ${sector.id} + ')'">
+<!--                        <div>-->
+<!--                            <span class="badge bg-info">Билетов: <span th:id="'count_' + ${sector.id}">0</span></span>-->
+<!--                        </div>-->
+                        <button class="btn btn-success" th:onclick="'generateTickets(' + ${match.id} + ', ' + ${sector.id} + ')'">
                             🎫 Сгенерировать билеты
                         </button>
                     </div>

@@ -1,47 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" layout:decorate="~{layout/main}">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" layout:decorate="~{layout/main}">
 <head>
-    <title>Управление заказами</title>
+    <title>Manager Dashboard</title>
     <th:block layout:fragment="styles">
-        <link rel="stylesheet" th:href="@{/css/admin.css}">
+        <link rel="stylesheet" th:href="@{/css/manager.css}">
     </th:block>
 </head>
 <body>
 <div layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>📦 Управление заказами</h2>
-        <a href="/admin" class="btn btn-outline-secondary">← Назад в админку</a>
-    </div>
+    <h2 class="mb-4">📋 Панель менеджера</h2>
 
     <!-- Статистика -->
     <div class="stats-row mb-4">
         <div class="stat-card-wrapper">
             <div class="stat-card">
-                <div class="stat-value" id="admin-stat-total" th:text="${totalOrders}">0</div>
+                <div class="stat-value" id="stat-total" th:text="${totalOrders}">0</div>
                 <div class="stat-label">Всего заказов</div>
             </div>
         </div>
         <div class="stat-card-wrapper">
             <div class="stat-card bg-success">
-                <div class="stat-value" id="admin-stat-paid" th:text="${totalPaid}">0</div>
+                <div class="stat-value" id="stat-paid" th:text="${totalPaid}">0</div>
                 <div class="stat-label">Оплачен</div>
             </div>
         </div>
         <div class="stat-card-wrapper">
             <div class="stat-card bg-info">
-                <div class="stat-value" id="admin-stat-processing" th:text="${totalProcessing}">0</div>
+                <div class="stat-value" id="stat-processing" th:text="${totalProcessing}">0</div>
                 <div class="stat-label">В работе</div>
             </div>
         </div>
         <div class="stat-card-wrapper">
             <div class="stat-card bg-primary">
-                <div class="stat-value" id="admin-stat-shipped" th:text="${totalShipped}">0</div>
+                <div class="stat-value" id="stat-shipped" th:text="${totalShipped}">0</div>
                 <div class="stat-label">Отправлен</div>
             </div>
         </div>
         <div class="stat-card-wrapper">
             <div class="stat-card bg-danger">
-                <div class="stat-value" id="admin-stat-cancelled" th:text="${totalCancelled}">0</div>
+                <div class="stat-value" id="stat-cancelled" th:text="${totalCancelled}">0</div>
                 <div class="stat-label">Отменён</div>
             </div>
         </div>
@@ -71,7 +68,7 @@
                 <td>
                     <select class="form-select form-select-sm"
                             th:value="${order.status}"
-                            th:onchange="'adminChangeStatus(' + ${order.id} + ', this.value)'">
+                            th:onchange="'changeStatus(' + ${order.id} + ', this.value)'">
                         <option value="PAID">✅ Оплачен</option>
                         <option value="PROCESSING">🔄 В работе</option>
                         <option value="SHIPPED">📦 Отправлен</option>
@@ -79,7 +76,7 @@
                     </select>
                 </td>
                 <td>
-                    <button class="btn btn-sm btn-info" th:onclick="'adminShowDetails(' + ${order.id} + ')'">
+                    <button class="btn btn-sm btn-info" th:onclick="'showDetails(' + ${order.id} + ')'">
                         📋 Детали
                     </button>
                 </td>
@@ -90,7 +87,7 @@
 </div>
 
 <th:block layout:fragment="scripts">
-    <script th:src="@{/js/admin-orders.js}"></script>
+    <script th:src="@{/js/manager.js}"></script>
 </th:block>
 </body>
 </html>
